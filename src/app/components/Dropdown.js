@@ -1,8 +1,34 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Pressable from './Pressable';
 
 export default function Dropdown({ text, options = [] }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(null);
+    const dropdownRef = useRef(null); //persistent reference to the dom element with "ref={dropdownRef}" 
+    const [shouldRenderDropdown, setShouldRenderDropdown] = useState(false);
+
+    useEffect(() => { //When isOpen becomes true, this function is triggered. It adds a mousedown event listener to the whole document and then checks, when the listener is triggered, if the click was outside of the dropdown.
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            setShouldRenderDropdown(true);
+        } else {
+            const timeout = setTimeout(() => setShouldRenderDropdown(false), 280); // almost match jumpClose duration to ensure that no accidental flickering occurs
+            return () => clearTimeout(timeout);
+        }
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen]);
 
     const handleOptionClick = (option) => {
         setSelectedOption(option);
@@ -10,8 +36,9 @@ export default function Dropdown({ text, options = [] }) {
     };
 
     return (
-        <div className="dropdown-container" style={{ position: 'relative' }}>
-            <div
+        <div ref={dropdownRef} className="dropdown-container" style={{ position: 'relative', borderRadius: '1.25rem' }}>
+
+            <Pressable //The Button
                 role="button" //For accessibility 
                 tabIndex={0} //For accessibility 
                 className={`label standard-blur standard-border${selectedOption ? ' gradient-border' : ''}`}
@@ -19,6 +46,7 @@ export default function Dropdown({ text, options = [] }) {
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev); }} //For accessibility 
             >
                 <span className="label-text">{selectedOption || text}</span>
+
                 <div className="icon-container">
                     {selectedOption ? (
                         <button
@@ -48,25 +76,30 @@ export default function Dropdown({ text, options = [] }) {
                         </svg>
                     )}
                 </div>
-            </div>
-            {isOpen && (
-                <ul className="dropdown-menu standard-blur standard-border" style={{
+
+            </Pressable>
+
+            {shouldRenderDropdown && ( //The Dropdown
+                <ul className="standard-blur standard-border" style={{
                     position: 'absolute',
                     top: 0,
                     right: 0,
-                    backgroundColor: 'rgba(255, 255, 255, .8)',
+                    backgroundColor: 'white',
                     padding: 0,
                     margin: 0,
                     listStyle: 'none',
                     zIndex: 10,
-                    borderRadius: '1.09375rem',
+                    borderRadius: 'inherit',
                     minWidth: '100%',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    animation: isOpen === true ? 'jumpOpen .3s' : 'jumpClose .3s',
+                    transformOrigin: 'top'
                 }}>
                     {options.map((option, index) => (
                         <div key={index}>
                             <li
                                 onClick={() => handleOptionClick(option)}
+                                className='dropdown-li'
                                 style={{
                                     padding: '.5rem .75rem',
                                     cursor: 'pointer',
@@ -98,6 +131,7 @@ export default function Dropdown({ text, options = [] }) {
                     ))}
                 </ul>
             )}
+
         </div>
     );
 }

@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import Dropdown from './Dropdown';
 import Label from './Label';
 
 export default function Filter() {
+
+    const [selectedWallpaper, setSelectedWallpaper] = useState(null);
+    const [selectedTimeOfDay, setSelectedTimeOfDay] = useState(null);
+
     return (
         <div className="standard-blur standard-border" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.75rem 2rem', borderRadius: '2rem', background: 'rgba(255, 255, 255, .5)' }}>
             <div className="filter-section">
@@ -14,6 +19,8 @@ export default function Filter() {
                             </svg>
                         }
                         text="Desktop"
+                        clicked={selectedWallpaper === 'Desktop'}
+                        onClick={() => setSelectedWallpaper(prev => prev === 'Desktop' ? null : 'Desktop')}
                     />
                     <Label
                         icon={
@@ -22,6 +29,8 @@ export default function Filter() {
                             </svg>
                         }
                         text="Phone"
+                        clicked={selectedWallpaper === 'Phone'}
+                        onClick={() => setSelectedWallpaper(prev => prev === 'Phone' ? null : 'Phone')}
                     />
                 </div>
             </div>
@@ -35,6 +44,7 @@ export default function Filter() {
                     />
                     <Dropdown
                         text="All Environments"
+                        options={["City", "Nature", "Inside"]}
                     />
                 </div>
             </div>
@@ -49,6 +59,8 @@ export default function Filter() {
                             </svg>
                         }
                         text="Day"
+                        clicked={selectedTimeOfDay === 'Day'}
+                        onClick={() => setSelectedTimeOfDay(prev => prev === 'Day' ? null : 'Day')}
                     />
                     <Label
                         icon={
@@ -57,6 +69,8 @@ export default function Filter() {
                             </svg>
                         }
                         text="Night"
+                        clicked={selectedTimeOfDay === 'Night'}
+                        onClick={() => setSelectedTimeOfDay(prev => prev === 'Night' ? null : 'Night')}
                     />
                     <Label
                         icon={
@@ -65,6 +79,8 @@ export default function Filter() {
                             </svg>
                         }
                         text="Twilight"
+                        clicked={selectedTimeOfDay === 'Twilight'}
+                        onClick={() => setSelectedTimeOfDay(prev => prev === 'Twilight' ? null : 'Twilight')}
                     />
                 </div>
             </div>

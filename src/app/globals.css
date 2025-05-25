@@ -4,17 +4,13 @@
     font-family: "Articulat-CF", "Trebuchet MS", sans-serif;
 }
 
-/* html, body {
-    height: 100%;
-}
-
-body {
-    background: radial-gradient(50% 50% at 50% 50%, #CFE2F9 0%, #F2F5F9 100%), #FFF;
-} */
-
 h1 {
     font-size: 4rem;
     font-weight: 700;
+}
+
+.nav-item {
+    cursor: pointer;
 }
 
 .standard-border {
@@ -77,9 +73,13 @@ h1 {
     align-items: center;
 }
 
+.dropdown-li:hover {
+    background-color: rgba(201, 201, 201, .15) !important;
+}
+
 .x-icon {
     opacity: .2;
-    transition: .2s;
+    transition: .1s;
 }
 
 .x-icon:hover {
@@ -105,4 +105,29 @@ h1 {
     background-repeat: repeat;
     background-size: auto;
     opacity: .3;
+}
+
+@keyframes jumpOpen {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes jumpClose {
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
 }

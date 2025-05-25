@@ -1,10 +1,21 @@
 'use client';
 import './page.css';
+import './globals.css';
 import Filter from './components/Filter';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Gallery() {
-  const photos = ['cat01', 'sunset02', 'tree03'];
+  const [photos, setPhotos] = useState([]);
+
+  useEffect(() => {
+    async function fetchPhotos() {
+      const res = await fetch('/api/photos?limit=20&shuffle=true');
+      const data = await res.json();
+      setPhotos(data);
+    }
+    fetchPhotos();
+  }, []);
 
   return (
     <div>
@@ -13,15 +24,17 @@ export default function Gallery() {
       </div>
       <section style={{ display: 'flex', flexDirection: 'column', gap: '4rem', margin: '0 4rem' }}>
         <Filter />
-        {photos.map((id) => (
-          <Link key={id} href={`/photos/${id}`}>
-            <img
-              src={`/images/${id}.jpg`}
-              alt={`Photo ${id}`}
-              style={{ width: 200, margin: 10, cursor: 'pointer' }}
-            />
-          </Link>
-        ))}
+        <div className='gallery-grid'>
+          {photos.map((id) => (
+            <Link key={id} href={`/photos/${id}`}>
+              <img
+                src={`/api/photos/${id}/small`}
+                alt={`Photo ${id}`}
+                style={{ width: 200, margin: 10, cursor: 'pointer' }}
+              />
+            </Link>
+          ))}
+        </div>
       </section>
     </div>
   );
