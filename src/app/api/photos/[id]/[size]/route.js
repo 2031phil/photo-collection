@@ -3,6 +3,7 @@ import { join } from 'path';
 import { createReadStream, existsSync } from 'fs';
 import { stat } from 'fs/promises';
 
+// This function is necessary to retrieve the actual photos
 export async function GET(req, { params }) {
   const { id, size } = params;
 
