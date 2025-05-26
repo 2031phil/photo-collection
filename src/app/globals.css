@@ -131,3 +131,12 @@ h1 {
         opacity: 0;
     }
 }
+
+@keyframes skeletonAnimation {
+  0% {
+    background-position: 0% 0%;
+  }
+  90%, 100% {
+    background-position: 150% 0%;
+  }
+}
