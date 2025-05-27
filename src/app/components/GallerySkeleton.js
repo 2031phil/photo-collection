@@ -1,0 +1,16 @@
+export default function GallerySkeleton({ page, index }) {
+    return (
+        <div
+            className='standard-blur'
+            style={{
+                width: '100%',
+                aspectRatio: '1/1',
+                borderRadius: '.5rem',
+                opacity: '.3',
+                background: 'linear-gradient(90deg, #FFBE0B 0%, #D52941 25%, #9500FF 50%, #D52941 75%, #FFBE0B 100%)',
+                backgroundSize: '300% 100%',
+                animation: 'skeletonAnimation 1.5s cubic-bezier(.66,.43,.16,1) infinite'
+            }}
+        />
+    );
+}

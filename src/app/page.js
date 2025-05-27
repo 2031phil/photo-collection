@@ -4,55 +4,47 @@ import './globals.css';
 import Filter from './components/Filter';
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
+import GalleryTitle from './components/GalleryTitle';
+import GalleryImage from './components/GalleryImage';
+import GallerySkeleton from './components/GallerySkeleton';
 
 export default function Gallery() {
-  const [allPhotos, setAllPhotos] = useState([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [dataLoaded, setDataLoaded] = useState(false); // Whether photo data has been fetched
-  const [initialImagesLoaded, setInitialImagesLoaded] = useState(false); // Whether initial batch of images has loaded
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [loadedImageIds, setLoadedImageIds] = useState(new Set());
-  const observerRef = useRef();
+  const [allPhotos, setAllPhotos] = useState([]); // All photo IDs from API
+  const [page, setPage] = useState(0); // Current page for pagination (0-based)
+  const [hasMore, setHasMore] = useState(true); // Whether there are more photos to load
+  const [loadedImageIds, setLoadedImageIds] = useState(new Set()); // Track which images have finished loading
+  const [loadingNewBatch, setLoadingNewBatch] = useState(false); // Prevent multiple simultaneous loads
+  const observerRef = useRef(); // Reference for intersection observer
   const PHOTOS_PER_PAGE = 18;
-  
-  const totalPhotosToShow = (page + 1) * PHOTOS_PER_PAGE;
-  const photosToShow = allPhotos.slice(0, totalPhotosToShow);
-  const visiblePhotos = allPhotos.slice(0, page * PHOTOS_PER_PAGE); // Photos that should be visible
-  const newPhotos = allPhotos.slice(page * PHOTOS_PER_PAGE, totalPhotosToShow); // New photos being loaded
-  const initialPhotos = allPhotos.slice(0, PHOTOS_PER_PAGE); // First batch of photos
 
+  // Calculate which photos to show
+  const visiblePhotos = allPhotos.slice(0, page * PHOTOS_PER_PAGE); // Already loaded and visible
+  const currentBatch = allPhotos.slice(page * PHOTOS_PER_PAGE, (page + 1) * PHOTOS_PER_PAGE); // Current batch being loaded
+  const showSkeletons = currentBatch.length > 0 && !currentBatch.every(id => loadedImageIds.has(id)); // Show skeletons if not all images in batch are loaded
+
+  // Fetch all photo IDs on component mount
   useEffect(() => {
     async function fetchPhotos() {
       const res = await fetch('/api/photos');
       const data = await res.json();
       setAllPhotos(data);
-      setDataLoaded(true);
     }
     fetchPhotos();
   }, []);
 
-  // Check if initial images have loaded
+  // Set up intersection observer for infinite scroll
   useEffect(() => {
-    if (dataLoaded && initialPhotos.length > 0 && !initialImagesLoaded) {
-      const allInitialImagesLoaded = initialPhotos.every(photoId => loadedImageIds.has(photoId));
-      if (allInitialImagesLoaded) {
-        setInitialImagesLoaded(true);
-      }
-    }
-  }, [loadedImageIds, initialPhotos, dataLoaded, initialImagesLoaded]);
-
-  // Watches out for the user scrolling down and then increases the page number
-  useEffect(() => {
-    if (!hasMore || !initialImagesLoaded) return;
+    if (!hasMore || allPhotos.length === 0) return;
 
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !loadingMore) {
+      if (entries[0].isIntersecting && !loadingNewBatch) {
+        // Check if we've reached the end
         if ((page + 1) * PHOTOS_PER_PAGE >= allPhotos.length) {
           setHasMore(false);
         } else {
-          setLoadingMore(true);
-          setPage((prev) => prev + 1);
+          // Load next page
+          setLoadingNewBatch(true);
+          setPage(prev => prev + 1);
         }
       }
     });
@@ -66,57 +58,27 @@ export default function Gallery() {
         observer.unobserve(observerRef.current);
       }
     };
-  }, [hasMore, page, allPhotos, initialImagesLoaded, loadingMore]);
+  }, [hasMore, page, allPhotos, loadingNewBatch]);
 
-  // Check if all new images have loaded
+  // Check if current batch has finished loading
   useEffect(() => {
-    if (loadingMore && newPhotos.length > 0) {
-      const allNewImagesLoaded = newPhotos.every(photoId => loadedImageIds.has(photoId));
-      if (allNewImagesLoaded) {
-        setLoadingMore(false);
-      }
+    if (currentBatch.length > 0 && currentBatch.every(id => loadedImageIds.has(id))) {
+      setLoadingNewBatch(false); // All images in current batch are loaded
     }
-  }, [loadedImageIds, newPhotos, loadingMore]);
+  }, [loadedImageIds, currentBatch]);
 
+  // Track when individual images finish loading
   const handleImageLoad = (photoId) => {
     setLoadedImageIds(prev => new Set([...prev, photoId]));
   };
 
-  if (!dataLoaded || !initialImagesLoaded) {
+  // Show grid only when there are more than 0 photos
+  if (allPhotos.length === 0) {
     return (
       <div>
-        <div style={{ width: '100vw', display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
-          <h1>2031's Photo Collection</h1>
-        </div>
-        <section style={{ display: 'flex', flexDirection: 'column', gap: '4rem', margin: '0 4rem' }}>
+        <GalleryTitle />
+        <section className='vertical-container'>
           <Filter />
-          {/* Preload initial images invisibly */}
-          {dataLoaded && initialPhotos.map((id) => (
-            <img
-              key={`preload-initial-${id}`}
-              src={`/api/photos/${id}/small`}
-              alt={`Photo ${id}`}
-              onLoad={() => handleImageLoad(id)}
-              style={{ display: 'none' }}
-            />
-          ))}
-          <div className='skeleton gallery-grid'>
-            {Array.from({ length: 18 }).map((_, i) => (
-              <div
-                key={i}
-                className='standard-blur'
-                style={{
-                  width: '100%',
-                  aspectRatio: '1/1',
-                  borderRadius: '.5rem',
-                  opacity: '.3',
-                  background: 'linear-gradient(90deg, #FFBE0B 0%, #D52941 25%, #9500FF 50%, #D52941 75%, #FFBE0B 100%)',
-                  backgroundSize: '300% 100%',
-                  animation: 'skeletonAnimation 1.5s cubic-bezier(.66,.43,.16,1) infinite'
-                }}
-              />
-            ))}
-          </div>
         </section>
       </div>
     );
@@ -124,39 +86,22 @@ export default function Gallery() {
 
   return (
     <div>
-      <div style={{ width: '100vw', display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
-        <h1>2031's Photo Collection</h1>
-      </div>
-      <section style={{ display: 'flex', flexDirection: 'column', gap: '4rem', margin: '0 4rem' }}>
+      <GalleryTitle />
+      <section className='vertical-container'>
         <Filter />
         <div className='gallery-grid'>
-          {/* Show previously loaded images */}
+          {/* Show previously loaded and visible images */}
           {visiblePhotos.map((id) => (
             <Link key={id} href={`/photos/${id}`}>
-              <img
-                src={`/api/photos/${id}/small`}
-                alt={`Photo ${id}`}
-                style={{ width: '100%', aspectRatio: '1/1', borderRadius: '.5rem', cursor: 'pointer', objectFit: 'cover' }}
-              />
+              <GalleryImage id={id} />
             </Link>
           ))}
-          
-          {/* Show new images only if they're all loaded, otherwise show skeletons */}
-          {!loadingMore ? (
-            // All new images have loaded, show them
-            newPhotos.map((id) => (
-              <Link key={id} href={`/photos/${id}`}>
-                <img
-                  src={`/api/photos/${id}/small`}
-                  alt={`Photo ${id}`}
-                  style={{ width: '100%', aspectRatio: '1/1', borderRadius: '.5rem', cursor: 'pointer', objectFit: 'cover' }}
-                />
-              </Link>
-            ))
-          ) : (
-            // Still loading new images, show skeletons and hidden images for preloading
+
+          {/* Current batch - show skeletons while loading, then actual images */}
+          {showSkeletons ? (
             <>
-              {newPhotos.map((id) => (
+              {/* Preload images invisibly while showing skeletons */}
+              {currentBatch.map((id) => (
                 <img
                   key={`preload-${id}`}
                   src={`/api/photos/${id}/small`}
@@ -165,24 +110,21 @@ export default function Gallery() {
                   style={{ display: 'none' }}
                 />
               ))}
-              {Array.from({ length: newPhotos.length }).map((_, i) => (
-                <div
-                  key={`skeleton-${page}-${i}`}
-                  className='standard-blur'
-                  style={{
-                    width: '100%',
-                    aspectRatio: '1/1',
-                    borderRadius: '.5rem',
-                    opacity: '.3',
-                    background: 'linear-gradient(90deg, #FFBE0B 0%, #D52941 25%, #9500FF 50%, #D52941 75%, #FFBE0B 100%)',
-                    backgroundSize: '300% 100%',
-                    animation: 'skeletonAnimation 1.5s cubic-bezier(.66,.43,.16,1) infinite'
-                  }}
-                />
+              {/* Show skeleton loaders in place of loading images */}
+              {Array.from({ length: currentBatch.length }).map((_, i) => (
+                <GallerySkeleton key={`skeleton-${page}-${i}`} page={page} index={i} />
               ))}
             </>
+          ) : (
+            /* All images in current batch are loaded - show them */
+            currentBatch.map((id) => (
+              <Link key={id} href={`/photos/${id}`}>
+                <GalleryImage id={id} />
+              </Link>
+            ))
           )}
         </div>
+        {/* Intersection observer target for infinite scroll */}
         {hasMore && <div ref={observerRef} style={{ height: '1px' }} />}
       </section>
     </div>
