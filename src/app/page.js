@@ -3,14 +3,15 @@ import './page.css';
 import './globals.css';
 import Filter from './components/Filter';
 import Link from 'next/link';
-import { useEffect, useState, useRef } from 'react';
 import GalleryTitle from './components/GalleryTitle';
 import GalleryImage from './components/GalleryImage';
 import GallerySkeleton from './components/GallerySkeleton';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Gallery() {
   const [allPhotos, setAllPhotos] = useState([]); // All photo IDs from API
+  const [filteredPhotoIds, setFilteredPhotoIds] = useState([]);
   const [page, setPage] = useState(0); // Current page for pagination (0-based)
   const [hasMore, setHasMore] = useState(true); // Whether there are more photos to load
   const [loadedImageIds, setLoadedImageIds] = useState(new Set()); // Track which images have finished loading
@@ -19,10 +20,11 @@ export default function Gallery() {
   const PHOTOS_PER_PAGE = 18;
   const [animatedImages, setAnimatedImages] = useState(new Set()); // Track which images have been animated
   const [currentBatchAnimated, setCurrentBatchAnimated] = useState(false); // Track if current batch is fully animated
+  const [allFilters, setAllFilters] = useState({});
 
   // Calculate which photos to show
-  const visiblePhotos = allPhotos.slice(0, page * PHOTOS_PER_PAGE); // Already loaded and visible
-  const currentBatch = allPhotos.slice(page * PHOTOS_PER_PAGE, (page + 1) * PHOTOS_PER_PAGE); // Current batch being loaded
+  const visiblePhotos = filteredPhotoIds.slice(0, page * PHOTOS_PER_PAGE); // Already loaded and visible
+  const currentBatch = filteredPhotoIds.slice(page * PHOTOS_PER_PAGE, (page + 1) * PHOTOS_PER_PAGE); // Current batch being loaded
   const showSkeletons = currentBatch.length > 0 && !currentBatch.every(id => loadedImageIds.has(id)); // Show skeletons if not all images in batch are loaded
 
   // Reset animation state when page changes
@@ -36,25 +38,26 @@ export default function Gallery() {
       const res = await fetch('/api/photos');
       const data = await res.json();
       setAllPhotos(data);
+      setFilteredPhotoIds(data);
     }
     fetchPhotos();
   }, []);
 
   // Set up intersection observer for infinite scroll
   useEffect(() => {
-    if (!hasMore || allPhotos.length === 0) return;
+    if (!hasMore || filteredPhotoIds.length === 0) return;
 
     const observer = new IntersectionObserver((entries) => {
       // Only proceed if:
       // 1. Element is intersecting
       // 2. Not currently loading a batch
       // 3. Current batch has finished animating (or no current batch)
-      if (entries[0].isIntersecting && 
-          !loadingNewBatch && 
-          (currentBatch.length === 0 || currentBatchAnimated)) {
-        
+      if (entries[0].isIntersecting &&
+        !loadingNewBatch &&
+        (currentBatch.length === 0 || currentBatchAnimated)) {
+
         // Check if we've reached the end
-        if ((page + 1) * PHOTOS_PER_PAGE >= allPhotos.length) {
+        if ((page + 1) * PHOTOS_PER_PAGE >= filteredPhotoIds.length) {
           setHasMore(false);
         } else {
           // Load next page
@@ -73,7 +76,7 @@ export default function Gallery() {
         observer.unobserve(observerRef.current);
       }
     };
-  }, [hasMore, page, allPhotos, loadingNewBatch, currentBatch.length, currentBatchAnimated]);
+  }, [hasMore, page, filteredPhotoIds, loadingNewBatch, currentBatch.length, currentBatchAnimated]);
 
   // Check if current batch has finished loading
   useEffect(() => {
@@ -90,18 +93,47 @@ export default function Gallery() {
   // Handle animation completion for current batch
   const handleAnimationComplete = (photoId) => {
     setAnimatedImages(prev => new Set([...prev, photoId]));
-    
+
     // Check if all images in current batch have animated
     const updatedAnimatedImages = new Set([...animatedImages, photoId]);
     const currentBatchFullyAnimated = currentBatch.every(id => updatedAnimatedImages.has(id));
-    
+
     if (currentBatchFullyAnimated && currentBatch.length > 0) {
       setCurrentBatchAnimated(true);
     }
   };
 
+  useEffect(() => {
+    async function applyFilters() {
+      const appliedFilters = Object.entries(allFilters).filter(([_, value]) => value !== null);
+
+      if (appliedFilters.length === 0) {
+        setFilteredPhotoIds(allPhotos);
+        return;
+      }
+
+      try {
+        const results = await Promise.all(
+          appliedFilters.map(([category, value]) =>
+            fetch(`/photo-filters/${category}/${value}.json`).then(res => res.json())
+          )
+        );
+
+        const filterSets = results.map(ids => new Set(ids));
+        const matchesAllFilters = (id) => filterSets.every(set => set.has(id));
+        const filtered = allPhotos.filter(id => matchesAllFilters(id));
+
+        setFilteredPhotoIds(filtered);
+      } catch (err) {
+        console.error('Error applying filters:', err);
+      }
+    }
+
+    applyFilters();
+  }, [allFilters, allPhotos]);
+
   // Show grid only when there are more than 0 photos
-  if (allPhotos.length === 0) {
+  if (filteredPhotoIds.length === 0) {
     return (
       <div>
         <GalleryTitle />
@@ -116,17 +148,23 @@ export default function Gallery() {
     <div>
       <GalleryTitle />
       <section className='vertical-container'>
-        <Filter />
+        <Filter onFilterChange={(filters) => {
+          setAllFilters(filters);
+        }} />
         <div className='gallery-grid'>
           {/* Show previously loaded and visible images */}
-          {visiblePhotos.map((id) => (
-            <Link key={id} href={`/photos/${id}`}>
-              <GalleryImage
-                id={id}
-                hasAnimated={animatedImages.has(id)}
-              />
-            </Link>
-          ))}
+          <AnimatePresence mode="popLayout">
+            {visiblePhotos.map((id) => (
+              <Link key={id} href={`/photos/${id}`}>
+                <GalleryImage
+                  id={id}
+                  hasAnimated={animatedImages.has(id)}
+                  layout
+                  exit={{ opacity: 0, scale: 0.95 }}
+                />
+              </Link>
+            ))}
+          </AnimatePresence>
 
           {/* Current batch - show skeletons while loading, then actual images */}
           {showSkeletons ? (
@@ -148,16 +186,20 @@ export default function Gallery() {
             </>
           ) : (
             /* All images in current batch are loaded - show them */
-            currentBatch.map((id, index) => (
-              <Link key={id} href={`/photos/${id}`}>
-                <GalleryImage
-                  id={id}
-                  index={index}
-                  hasAnimated={animatedImages.has(id)}
-                  onAnimationComplete={() => handleAnimationComplete(id)}
-                />
-              </Link>
-            ))
+            <AnimatePresence mode="popLayout">
+              {currentBatch.map((id, index) => (
+                <Link key={id} href={`/photos/${id}`}>
+                  <GalleryImage
+                    id={id}
+                    index={index}
+                    hasAnimated={animatedImages.has(id)}
+                    onAnimationComplete={() => handleAnimationComplete(id)}
+                    layout
+                    exit={{ opacity: 0, scale: 0.95 }}
+                  />
+                </Link>
+              ))}
+            </AnimatePresence>
           )}
         </div>
         {/* Intersection observer target for infinite scroll */}

@@ -1,11 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
 import Label from './Label';
 
-export default function Filter() {
+export default function Filter({ onFilterChange }) {
 
+    // States tracking filters
     const [selectedWallpaper, setSelectedWallpaper] = useState(null);
     const [selectedTimeOfDay, setSelectedTimeOfDay] = useState(null);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [selectedEnvironment, setSelectedEnvironment] = useState(null);
+
+    useEffect(() => {
+        onFilterChange?.({
+            orientation: selectedWallpaper ? (selectedWallpaper === "Desktop" ? "landscape" : "portrait") : null,
+            country: selectedCountry?.toLowerCase() ?? null,
+            environment: selectedEnvironment?.toLowerCase() ?? null,
+            time_of_day: selectedTimeOfDay?.toLowerCase() ?? null
+        });
+    }, [selectedWallpaper, selectedCountry, selectedEnvironment, selectedTimeOfDay]);
 
     return (
         <div className="standard-blur standard-border" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.75rem 2rem', borderRadius: '2rem', background: 'rgba(255, 255, 255, .5)' }}>
@@ -40,11 +52,13 @@ export default function Filter() {
                 <div className='filter-section-label-container'>
                     <Dropdown
                         text="All Countries"
-                        options={["Germany", "Argentina", "Norway"]}
+                        options={["Azerbaijan", "Georgia", "Germany", "Italy", "Norway", "Sweden"]}
+                        onSelect={setSelectedCountry}
                     />
                     <Dropdown
                         text="All Environments"
-                        options={["City", "Nature", "Inside"]}
+                        options={["Airport", "Interior", "Nature", "Rural", "Urban"]}
+                        onSelect={setSelectedEnvironment}
                     />
                 </div>
             </div>

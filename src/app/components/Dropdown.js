@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Pressable from './Pressable';
 
-export default function Dropdown({ text, options = [] }) {
+export default function Dropdown({ onSelect, text, options = [] }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(null);
     const dropdownRef = useRef(null); //persistent reference to the dom element with "ref={dropdownRef}" 
@@ -32,6 +32,7 @@ export default function Dropdown({ text, options = [] }) {
 
     const handleOptionClick = (option) => {
         setSelectedOption(option);
+        onSelect(option);
         setIsOpen(false);
     };
 
@@ -53,6 +54,7 @@ export default function Dropdown({ text, options = [] }) {
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedOption(null);
+                                onSelect(null);
                             }}
                             style={{
                                 background: 'none',
