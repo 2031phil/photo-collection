@@ -1,6 +1,8 @@
-export default function GallerySkeleton({ page, index }) {
+import { motion } from 'framer-motion';
+
+export default function GallerySkeleton() {
     return (
-        <div
+        <motion.div
             className='standard-blur'
             style={{
                 width: '100%',
@@ -11,6 +13,9 @@ export default function GallerySkeleton({ page, index }) {
                 backgroundSize: '300% 100%',
                 animation: 'skeletonAnimation 1.5s cubic-bezier(.66,.43,.16,1) infinite'
             }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.3 }}
+            transition={{ duration: 0.8 }}
         />
     );
 }

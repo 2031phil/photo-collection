@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from 'react';
 import GalleryTitle from './components/GalleryTitle';
 import GalleryImage from './components/GalleryImage';
 import GallerySkeleton from './components/GallerySkeleton';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Gallery() {
   const [allPhotos, setAllPhotos] = useState([]); // All photo IDs from API
@@ -16,11 +17,18 @@ export default function Gallery() {
   const [loadingNewBatch, setLoadingNewBatch] = useState(false); // Prevent multiple simultaneous loads
   const observerRef = useRef(); // Reference for intersection observer
   const PHOTOS_PER_PAGE = 18;
+  const [animatedImages, setAnimatedImages] = useState(new Set()); // Track which images have been animated
+  const [currentBatchAnimated, setCurrentBatchAnimated] = useState(false); // Track if current batch is fully animated
 
   // Calculate which photos to show
   const visiblePhotos = allPhotos.slice(0, page * PHOTOS_PER_PAGE); // Already loaded and visible
   const currentBatch = allPhotos.slice(page * PHOTOS_PER_PAGE, (page + 1) * PHOTOS_PER_PAGE); // Current batch being loaded
   const showSkeletons = currentBatch.length > 0 && !currentBatch.every(id => loadedImageIds.has(id)); // Show skeletons if not all images in batch are loaded
+
+  // Reset animation state when page changes
+  useEffect(() => {
+    setCurrentBatchAnimated(false);
+  }, [page]);
 
   // Fetch all photo IDs on component mount
   useEffect(() => {
@@ -37,7 +45,14 @@ export default function Gallery() {
     if (!hasMore || allPhotos.length === 0) return;
 
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !loadingNewBatch) {
+      // Only proceed if:
+      // 1. Element is intersecting
+      // 2. Not currently loading a batch
+      // 3. Current batch has finished animating (or no current batch)
+      if (entries[0].isIntersecting && 
+          !loadingNewBatch && 
+          (currentBatch.length === 0 || currentBatchAnimated)) {
+        
         // Check if we've reached the end
         if ((page + 1) * PHOTOS_PER_PAGE >= allPhotos.length) {
           setHasMore(false);
@@ -58,7 +73,7 @@ export default function Gallery() {
         observer.unobserve(observerRef.current);
       }
     };
-  }, [hasMore, page, allPhotos, loadingNewBatch]);
+  }, [hasMore, page, allPhotos, loadingNewBatch, currentBatch.length, currentBatchAnimated]);
 
   // Check if current batch has finished loading
   useEffect(() => {
@@ -70,6 +85,19 @@ export default function Gallery() {
   // Track when individual images finish loading
   const handleImageLoad = (photoId) => {
     setLoadedImageIds(prev => new Set([...prev, photoId]));
+  };
+
+  // Handle animation completion for current batch
+  const handleAnimationComplete = (photoId) => {
+    setAnimatedImages(prev => new Set([...prev, photoId]));
+    
+    // Check if all images in current batch have animated
+    const updatedAnimatedImages = new Set([...animatedImages, photoId]);
+    const currentBatchFullyAnimated = currentBatch.every(id => updatedAnimatedImages.has(id));
+    
+    if (currentBatchFullyAnimated && currentBatch.length > 0) {
+      setCurrentBatchAnimated(true);
+    }
   };
 
   // Show grid only when there are more than 0 photos
@@ -93,7 +121,10 @@ export default function Gallery() {
           {/* Show previously loaded and visible images */}
           {visiblePhotos.map((id) => (
             <Link key={id} href={`/photos/${id}`}>
-              <GalleryImage id={id} />
+              <GalleryImage
+                id={id}
+                hasAnimated={animatedImages.has(id)}
+              />
             </Link>
           ))}
 
@@ -112,20 +143,25 @@ export default function Gallery() {
               ))}
               {/* Show skeleton loaders in place of loading images */}
               {Array.from({ length: currentBatch.length }).map((_, i) => (
-                <GallerySkeleton key={`skeleton-${page}-${i}`} page={page} index={i} />
+                <GallerySkeleton key={`skeleton-${page}-${i}`} />
               ))}
             </>
           ) : (
             /* All images in current batch are loaded - show them */
-            currentBatch.map((id) => (
+            currentBatch.map((id, index) => (
               <Link key={id} href={`/photos/${id}`}>
-                <GalleryImage id={id} />
+                <GalleryImage
+                  id={id}
+                  index={index}
+                  hasAnimated={animatedImages.has(id)}
+                  onAnimationComplete={() => handleAnimationComplete(id)}
+                />
               </Link>
             ))
           )}
         </div>
         {/* Intersection observer target for infinite scroll */}
-        {hasMore && <div ref={observerRef} style={{ height: '1px' }} />}
+        {hasMore && <div ref={observerRef} style={{ height: '1px', transform: 'translateY(-5rem)' }} />}
       </section>
     </div>
   );
