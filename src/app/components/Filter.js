@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
 import Label from './Label';
+import { motion } from 'framer-motion';
 
 export default function Filter({ onFilterChange }) {
 
@@ -20,7 +21,7 @@ export default function Filter({ onFilterChange }) {
     }, [selectedWallpaper, selectedCountry, selectedEnvironment, selectedTimeOfDay]);
 
     return (
-        <div className="standard-blur standard-border" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.75rem 2rem', borderRadius: '2rem', background: 'rgba(255, 255, 255, .5)' }}>
+        <div className="standard-blur standard-border" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.75rem 2rem', marginBottom: '4rem', borderRadius: '2rem', background: 'rgba(255, 255, 255, .9)', position: 'sticky', top: '1rem', zIndex: '10' }}>
             <div className="filter-section">
                 <span className="filter-section-title">Wallpaper</span>
                 <div className='filter-section-label-container'>
@@ -46,10 +47,10 @@ export default function Filter({ onFilterChange }) {
                     />
                 </div>
             </div>
-            <hr style={{ width: '1px', height: '2rem', color: '#C9C9C9' }} />
-            <div className="filter-section">
+            <hr className='filter-dividers' />
+            <motion.div layout="position" transition={{ type: 'spring', stiffness: 500, damping: 30 }} className="filter-section">
                 <span className="filter-section-title">Location</span>
-                <div className='filter-section-label-container'>
+                <motion.div layout="position" className='filter-section-label-container'>
                     <Dropdown
                         text="All Countries"
                         options={["Azerbaijan", "Georgia", "Germany", "Italy", "Norway", "Sweden"]}
@@ -60,9 +61,9 @@ export default function Filter({ onFilterChange }) {
                         options={["Airport", "Interior", "Nature", "Rural", "Urban"]}
                         onSelect={setSelectedEnvironment}
                     />
-                </div>
-            </div>
-            <hr style={{ width: '1px', height: '2rem', color: '#C9C9C9' }} />
+                </motion.div>
+            </motion.div>
+            <hr className='filter-dividers' />
             <div className="filter-section">
                 <span className="filter-section-title">Time of Day</span>
                 <div className='filter-section-label-container'>

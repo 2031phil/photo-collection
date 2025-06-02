@@ -1,3 +1,4 @@
+'use client';
 import { useState, useRef } from 'react';
 
 export default function Pressable({ children, className = '', style = {}, onClick }) {

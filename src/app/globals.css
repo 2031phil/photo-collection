@@ -107,6 +107,13 @@ h1 {
     opacity: .3;
 }
 
+.filter-dividers {
+    width: 1px;
+    height: 2rem;
+    border: none;
+    background-color: #C9C9C9;
+}
+
 @keyframes jumpOpen {
     0% {
         transform: scale(0);

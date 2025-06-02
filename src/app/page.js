@@ -35,10 +35,10 @@ export default function Gallery() {
   // Load next batch of photos
   const loadNextBatch = (photoList, currentVisible) => {
     if (loading) return;
-    
+
     setLoading(true);
     const nextPhotos = photoList.slice(currentVisible.length, currentVisible.length + PHOTOS_PER_PAGE); // Grabs the next batch of photos that haven’t been displayed yet, based on how many are currently visible
-    
+
     if (nextPhotos.length === 0) {
       setHasMore(false);
       setLoading(false);
@@ -131,7 +131,7 @@ export default function Gallery() {
       setVisiblePhotos(firstPage);
       setHasMore(allPhotos.length > PHOTOS_PER_PAGE);
       setLoading(false);
-      
+
       // Preload first page if needed
       firstPage.forEach(id => {
         if (!loadedImages.has(id)) {
@@ -145,11 +145,11 @@ export default function Gallery() {
 
     // Find currently visible photos that match the new filter
     const matchingVisible = visiblePhotos.filter(id => newFilteredList.includes(id));
-    
+
     // Calculate how many more we need for first page
     const needed = Math.min(PHOTOS_PER_PAGE, newFilteredList.length);
     const additional = newFilteredList.slice(0, needed).filter(id => !matchingVisible.includes(id));
-    
+
     // Set new visible photos: matching ones first, then additional (ensure uniqueness)
     const combined = [...matchingVisible, ...additional];
     const newVisible = [...new Set(combined)].slice(0, needed);
@@ -169,50 +169,47 @@ export default function Gallery() {
 
   if (filteredPhotos.length === 0) {
     return (
-      <div>
+      <div className='gallery-page-container'>
         <GalleryTitle />
-        <section className='vertical-container'>
-          <Filter onFilterChange={setAllFilters} />
-        </section>
+        <Filter onFilterChange={setAllFilters} />
       </div>
     );
   }
 
   return (
-    <div>
+    <div className='gallery-page-container'>
       <GalleryTitle />
-      <section className='vertical-container'>
-        <Filter onFilterChange={setAllFilters} />
-        <motion.div className='gallery-grid' layout>
-          <AnimatePresence mode="popLayout">
-            {visiblePhotos.map((id) => (
-              <motion.div
-                key={id}
-                layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ 
-                  layout: { duration: 0.3, ease: "easeInOut" },
-                  opacity: { duration: 0.2 },
-                  scale: { duration: 0.2 }
-                }}
-              >
-                {loadedImages.has(id) ? (
-                  <Link href={`/photos/${id}`}>
-                    <GalleryImage id={id} />
-                  </Link>
-                ) : (
-                  <GallerySkeleton />
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-        {hasMore && (
-          <div ref={observerRef} style={{ height: '1px', transform: 'translateY(-5rem)' }} />
-        )}
-      </section>
+      <Filter onFilterChange={setAllFilters} />
+      <motion.div className='gallery-grid' layout>
+        <AnimatePresence mode="popLayout">
+          {visiblePhotos.map((id, i) => (
+            <motion.div
+              key={id}
+              layout
+              layoutId={`photo-${id}`}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{
+                layout: { duration: 0.3, ease: "easeInOut" },
+                opacity: { duration: 0.2 },
+                scale: { duration: 0.2 }
+              }}
+            >
+              {loadedImages.has(id) ? (
+                <Link href={`/photos/${id}`}>
+                  <GalleryImage id={id} index={i} />
+                </Link>
+              ) : (
+                <GallerySkeleton />
+              )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+      {hasMore && (
+        <div ref={observerRef} style={{ height: '1px', transform: 'translateY(-5rem)' }} />
+      )}
     </div>
   );
 }
