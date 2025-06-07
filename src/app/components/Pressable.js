@@ -1,7 +1,8 @@
 'use client';
 import { useState, useRef } from 'react';
+import Label from './Label';
 
-export default function Pressable({ children, className = '', style = {}, onClick }) {
+export default function Pressable({ icon, text, clicked, onClick }) {
     const [isPressed, setIsPressed] = useState(false);
     const pressTimeout = useRef(null);
     const pressStartTime = useRef(null);
@@ -29,16 +30,23 @@ export default function Pressable({ children, className = '', style = {}, onClic
         setIsPressed(false);
     };
 
+    function handleClick() {
+        if (typeof onClick === 'function') { //prevents errors in case onClick wasn’t passed or is not a function
+            onClick();
+        }
+    }
+
     return (
-        <div
-            className={className}
-            style={{ transform: isPressed ? 'scale(0.9)' : 'scale(1)', ...style }}
+        <Label
+            icon={icon}
+            text={text}
+            onClick={handleClick}
+            className={`label border-hover pointer standard-blur standard-border${clicked ? ' gradient-border-20' : ''}`}
+            style={{ transform: isPressed ? 'scale(0.9)' : 'scale(1)' }}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}
-            onClick={onClick}
         >
-            {children}
-        </div>
+        </Label>
     );
 }

@@ -1,6 +1,5 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import Pressable from './Pressable';
 
 export default function Dropdown({ onSelect, text, options = [] }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -40,10 +39,10 @@ export default function Dropdown({ onSelect, text, options = [] }) {
     return (
         <div ref={dropdownRef} className="dropdown-container" style={{ position: 'relative', borderRadius: '1.25rem' }}>
 
-            <Pressable //The Button
+            <div //The Button
                 role="button" //For accessibility 
                 tabIndex={0} //For accessibility 
-                className={`label standard-blur standard-border${selectedOption ? ' gradient-border' : ''}`}
+                className={`label border-hover pointer standard-blur standard-border${selectedOption ? ' gradient-border-20' : ''}`}
                 onClick={() => setIsOpen((prev) => !prev)}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev); }} //For accessibility 
             >
@@ -80,7 +79,7 @@ export default function Dropdown({ onSelect, text, options = [] }) {
                     )}
                 </div>
 
-            </Pressable>
+            </div>
 
             {shouldRenderDropdown && ( //The Dropdown
                 <ul className="standard-blur standard-border" style={{
