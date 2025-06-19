@@ -69,7 +69,6 @@ export default function ImageDetailView({ id }) {
     <motion.div
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
       style={{
         position: 'fixed',
@@ -248,9 +247,10 @@ export default function ImageDetailView({ id }) {
                       type='checkbox'
                       id='condition'
                       name='usageAgreement'
+                      checked={userAgree}
                       onChange={(e) => setUserAgree(e.target.checked)}
                     />
-                    I agree to download the image for personal use only.
+                    I agree to download this image for personal use only.
                   </label>
                   <motion.button
                     onClick={userAgree ? handleDownload : undefined}
