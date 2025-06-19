@@ -3,7 +3,7 @@ import Dropdown from './Dropdown';
 import { motion } from 'framer-motion';
 import Pressable from './Pressable';
 
-export default function Filter({ onFilterChange }) {
+export default function Filter({ onFilterChange, selectedPhotoId }) {
 
     // States tracking filters
     const [selectedWallpaper, setSelectedWallpaper] = useState(null);
@@ -21,7 +21,7 @@ export default function Filter({ onFilterChange }) {
     }, [selectedWallpaper, selectedCountry, selectedEnvironment, selectedTimeOfDay]);
 
     return (
-        <div className="standard-blur standard-border" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.75rem 2rem', marginBottom: '4rem', borderRadius: '2rem', background: 'rgba(255, 255, 255, .9)', position: 'sticky', top: '1rem', zIndex: '10' }}>
+        <div className="standard-blur standard-border" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.75rem 2rem', marginBottom: '4rem', borderRadius: '2rem', background: 'rgba(255, 255, 255, .9)', position: 'sticky', top: '1rem', zIndex: '10', transition: '.2s', opacity: selectedPhotoId ? '0' : '1'}}>
             <div className="filter-section">
                 <span className="filter-section-title">Wallpaper</span>
                 <div className='filter-section-label-container'>

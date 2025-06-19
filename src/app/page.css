@@ -5,10 +5,15 @@
     grid-template-rows: 214px 214px 214px;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     margin-bottom: 2rem;
-    margin: 0 1rem 0 1rem;
+    margin: 0 1rem;
     z-index: 1;
+    transition: opacity .2s;
 }
 
 .gallery-page-container {
-    padding: 0 3rem 0 3rem;
+    padding: 0 3rem;
+}
+
+.elevated {
+    z-index: 1000;
 }

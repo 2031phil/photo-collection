@@ -4,10 +4,13 @@ import { createReadStream, existsSync } from 'fs';
 import { stat } from 'fs/promises';
 
 // This function is necessary to retrieve the actual photos
-export async function GET(req, { params }) {
-  const { id, size } = params;
+export async function GET(req) {
+  const url = new URL(req.url);
+  const segments = url.pathname.split('/');
 
-  // Construct the path to the image: /photos/0001/small.jpg
+  const id = segments[segments.length - 2];
+  const size = segments[segments.length - 1];
+
   const filePath = join(process.cwd(), 'photos', id, `${id}_${size}.jpg`);
 
   if (!existsSync(filePath)) {
@@ -21,6 +24,7 @@ export async function GET(req, { params }) {
     headers: {
       'Content-Type': 'image/jpeg',
       'Content-Length': fileStat.size,
+      'Cache-Control': 'public, max-age=31536000',
     },
   });
 }

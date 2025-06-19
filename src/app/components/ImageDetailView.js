@@ -1,16 +1,14 @@
 'use client';
-import { use, useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import Selector from '@/app/components/Selector';
 import Label from '@/app/components/Label';
 import '@/app/globals.css';
 import tagMappings from '@/utils/tagMappings';
 import Pressable from '@/app/components/Pressable';
-import { useRouter } from 'next/navigation';
 
-export default function ImageDetail({ params }) {
-  const router = useRouter();
-  const { id } = use(params);
+export default function ImageDetailView({ id }) {
 
   const [imgSrc, setImgSrc] = useState(`/api/photos/${id}/small`);
   const [userAgree, setUserAgree] = useState(false);
@@ -19,6 +17,13 @@ export default function ImageDetail({ params }) {
   const [license, setLicense] = useState(0);
   const [hasContainerAnimated, setHasContainerAnimated] = useState(false);
   const imageRef = useRef();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryPhotoId = searchParams.get('image');
+  const activePhotoId = queryPhotoId || id;
+  useEffect(() => {
+    router.prefetch('/gallery');
+  }, [router]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -28,7 +33,7 @@ export default function ImageDetail({ params }) {
 
   useEffect(() => {
     const mediumImg = new Image();
-    mediumImg.src = `/api/photos/${id}/medium`;
+    mediumImg.src = `/api/photos/${activePhotoId}/medium`;
     mediumImg.onload = () => {
       setTimeout(() => {
         setImgSrc(mediumImg.src);
@@ -36,11 +41,11 @@ export default function ImageDetail({ params }) {
         setImageWidth(width);
       }, 500)
     };
-  }, [id]);
+  }, [activePhotoId]);
 
   useEffect(() => {
     async function fetchTags() {
-      const res = await fetch(`/api/photos/${id}/meta`);
+      const res = await fetch(`/api/photos/${activePhotoId}/meta`);
       if (res.ok) {
         const data = await res.json();
         const { ai_info, ...rest } = data;
@@ -49,24 +54,43 @@ export default function ImageDetail({ params }) {
       }
     }
     fetchTags();
-  }, [id]);
+  }, [activePhotoId]);
 
   const handleDownload = () => {
     const link = document.createElement('a');
-    link.href = `/api/photos/${id}/large`;
-    link.download = `photo-${id}.jpg`; // Set the default filename
+    link.href = `/api/photos/${activePhotoId}/large`;
+    link.download = `photo-${activePhotoId}.jpg`; // Set the default filename
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   return (
-    <div style={{ width: '100vw', padding: '0 4rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', width: '100%', height: '60vh', marginTop: '3rem' }}>
+    <motion.div
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 1000,
+        width: '100vw',
+        height: '100vh',
+        overflowY: 'auto',
+        padding: '0 4rem',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        gap: '1rem',
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', width: '100%', height: '60vh' }}>
         <motion.div
-          key={id}
+          key={activePhotoId}
           layout
-          layoutId={`photo-${id}`}
+          layoutId={`photo-${activePhotoId}`}
           style={{ maxWidth: '75%', height: '100%', position: 'relative' }}
         >
           <div style={{ width: 'fit-content', position: 'absolute', top: '-3rem' }}>
@@ -78,16 +102,21 @@ export default function ImageDetail({ params }) {
               }
               text="Back"
               onClick={() => {
-                setImgSrc(`/api/photos/${id}/small`);
-                setTimeout(() => {
-                  router.push('/');
-                }, 10);
+                // setImgSrc(`/api/photos/${activePhotoId}/small`);
+                if (
+                  (typeof document !== 'undefined' && document.referrer && document.referrer.includes('/gallery')) ||
+                  (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.origin + '/gallery'))
+                ) {
+                  router.back();
+                } else {
+                  router.push('/', { shallow: true, scroll: false });
+                }
               }}
             />
           </div>
           <motion.img
             src={imgSrc}
-            alt={`Photo ${id}`}
+            alt={`Image ${activePhotoId}`}
             style={{ borderRadius: '1rem', maxWidth: '100%', display: 'block', height: '100%' }}
             ref={imageRef}
           />
@@ -152,7 +181,7 @@ export default function ImageDetail({ params }) {
             transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              <h1 style={{ width: '100%', textAlign: 'center', fontSize: '2.25rem', fontWeight: '700' }}>Image #{id}</h1>
+              <h1 style={{ width: '100%', textAlign: 'center', fontSize: '2.25rem', fontWeight: '700' }}>Image #{activePhotoId}</h1>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontWeight: '400' }}>License</span>
@@ -292,6 +321,6 @@ export default function ImageDetail({ params }) {
           </motion.div>
         </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }

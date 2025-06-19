@@ -1,8 +1,7 @@
+import { NavHeightProvider } from './contexts/NavHeightContext';
 import './globals.css';
 import Navbar from './components/Navbar';
 import Head from 'next/head';
-import { LayoutGroup, AnimatePresence } from 'framer-motion';
-import { GalleryProvider } from './contexts/GalleryContext';
 
 export const metadata = {
   title: "2031's Photo Collection",
@@ -21,18 +20,14 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
-        <GalleryProvider>
+        <NavHeightProvider>
           <div className="background-wrapper" />
           <Navbar />
           <main>
-            <LayoutGroup>
-              <AnimatePresence mode="wait" initial={false}>
-                {children}
-              </AnimatePresence>
-            </LayoutGroup>
+            {children}
           </main>
-        </GalleryProvider>
-        <link rel="stylesheet" href="https://use.typekit.net/lbq0rfz.css" />
+          <link rel="stylesheet" href="https://use.typekit.net/lbq0rfz.css" />
+        </NavHeightProvider>
       </body>
     </html>
   );

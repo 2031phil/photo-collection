@@ -2,24 +2,16 @@
 import './page.css';
 import './globals.css';
 import Filter from './components/Filter';
-import Link from 'next/link';
 import GalleryTitle from './components/GalleryTitle';
 import GalleryImage from './components/GalleryImage';
 import GallerySkeleton from './components/GallerySkeleton';
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGalleryContext } from './contexts/GalleryContext';
-import { usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import ImageDetailView from './components/ImageDetailView';
+import { useNavHeight } from './contexts/NavHeightContext';
 
 export default function Gallery() {
-  const pathname = usePathname();
-  const {
-    saveGalleryState,
-    getSavedState,
-    clearSavedState,
-    setNavigatingAway,
-    getIsNavigatingAway
-  } = useGalleryContext();
 
   const [allPhotos, setAllPhotos] = useState([]); // Array of all photo ids
   const [filteredPhotos, setFilteredPhotos] = useState([]); // Array storing filtered ids (if any filters are set)
@@ -30,63 +22,59 @@ export default function Gallery() {
   const [allFilters, setAllFilters] = useState({}); // Object of all filter settings
   const [noneMatching, setNoneMatching] = useState(false);
   // Initialize shouldAnimate based on whether we have saved state
-  const [shouldAnimate, setShouldAnimate] = useState(() => {
-    const savedState = getSavedState();
-    return !savedState; // Don't animate if we have saved state
-  });
+  const [shouldAnimate, setShouldAnimate] = useState(true)
+  const [hasReturnedToGallery, setHasReturnedToGallery] = useState(false);
+  const [wasImageOpen, setWasImageOpen] = useState(false);
   const observerRef = useRef(); // Reference for the intersection observer
   const PHOTOS_PER_PAGE = 18; // Number of photos per batch
+  const searchParams = useSearchParams();
+  const selectedPhotoId = searchParams.get('image');
+  const { navHeight } = useNavHeight();
 
-  // Check for saved state on mount
+  // Fetch all photos on mount
   useEffect(() => {
-    const savedState = getSavedState();
-
-    if (savedState) {
-      // Restore saved state
-      setAllPhotos(savedState.allPhotos);
-      setVisiblePhotos(savedState.visiblePhotos);
-      setFilteredPhotos(savedState.filteredPhotos);
-      setLoadedImages(new Set(savedState.loadedImages));
-      setAllFilters(savedState.allFilters);
-      setHasMore(savedState.hasMore);
-      setLoading(false);
-
-      // Clear the saved state after restoring
-      clearSavedState();
-    } else {
-      // Fresh load - fetch photos
-      fetchPhotos();
-    }
-
-  }, [pathname]);
-
-  // Save state when navigating away from gallery
-  const saveState = () => {
-    if (allPhotos.length > 0) {
-      const stateToSave = {
-        allPhotos,
-        visiblePhotos,
-        filteredPhotos,
-        loadedImages: Array.from(loadedImages), // Convert Set to Array for JSON serialization
-        allFilters,
-        hasMore
-      };
-      saveGalleryState(stateToSave);
-    }
-  }
-
-  // Fetch all photos
-  const fetchPhotos = async () => {
-    try {
+    async function fetchPhotos() {
       const res = await fetch('/api/photos');
       const data = await res.json();
       setAllPhotos(data);
       setFilteredPhotos(data);
       loadNextBatch(data, []);
-    } catch (error) {
-      console.error('Error fetching photos:', error);
     }
-  };
+    fetchPhotos();
+  }, []);
+
+  // Set some states used for managing z-index of opened photos
+  useEffect(() => {
+    if (selectedPhotoId) {
+      setWasImageOpen(true);
+    } else if (wasImageOpen) {
+      // Image was open and now closed (via any method)
+      setHasReturnedToGallery(true);
+      setWasImageOpen(false);
+    }
+  }, [selectedPhotoId, wasImageOpen]);
+
+  // Prevent scrolling while image overlay is open
+  useEffect(() => {
+    document.body.style.overflow = selectedPhotoId ? 'hidden' : '';
+    return () => (document.body.style.overflow = '');
+  }, [selectedPhotoId]);
+
+  // Resetting the higher z-index of the last opened image after return animation has finished
+  useEffect(() => {
+    if (hasReturnedToGallery) {
+      const timeout = setTimeout(() => {
+        setHasReturnedToGallery(false);
+
+        // Remove elevated class from all buttons
+        document.querySelectorAll('.elevated').forEach(div => {
+          div.classList.remove('elevated');
+        });
+      }, 300);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [hasReturnedToGallery]);
 
   // Load next batch of photos
   const loadNextBatch = (photoList, currentVisible) => {
@@ -146,7 +134,7 @@ export default function Gallery() {
     }
 
     return () => observer.disconnect();
-  }, [hasMore, loading, filteredPhotos, visiblePhotos, loadedImages]);
+  }, [hasMore, loading, filteredPhotos, visiblePhotos]);
 
   // Handle filter changes
   useEffect(() => {
@@ -254,10 +242,14 @@ export default function Gallery() {
   }
 
   return (
-    <div className='gallery-page-container'>
-      <GalleryTitle />
-      <Filter onFilterChange={setAllFilters} />
-      <motion.div className='gallery-grid' layout>
+    <div className='gallery-page-container' style={{ marginTop: !selectedPhotoId ? 0 : navHeight }}>
+      <GalleryTitle selectedPhotoId={selectedPhotoId} />
+      <Filter onFilterChange={setAllFilters} selectedPhotoId={selectedPhotoId} />
+      <motion.div
+        className='gallery-grid'
+        layout
+        style={{ opacity: selectedPhotoId ? '0' : '1' }}
+      >
         <AnimatePresence mode="popLayout">
           {visiblePhotos.map((id, i) => (
             <motion.div
@@ -272,12 +264,25 @@ export default function Gallery() {
                 opacity: { duration: 0.2 },
                 scale: { duration: 0.2 }
               }}
-              style={{ overflow: 'hidden', borderRadius: '.5rem', aspectRatio: '1/1' }}
+              style={{ overflow: 'hidden', borderRadius: '.5rem', aspectRatio: '1/1', position: 'relative' }}
+              className='img-container'
             >
               {loadedImages.has(id) ? (
-                <Link href={`/photos/${id}`} onClick={saveState}>
+                <button
+                  onClick={(e) => {
+                    const button = e.currentTarget;
+                    const container = button.closest('.img-container');
+                    if (container) container.classList.add('elevated');
+
+                    const url = new URL(window.location);
+                    url.searchParams.set('image', id);
+                    window.history.pushState({}, '', url);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  style={{ all: 'unset', cursor: 'pointer' }}
+                >
                   <GalleryImage id={id} index={i} shouldAnimate={shouldAnimate} />
-                </Link>
+                </button>
               ) : (
                 <GallerySkeleton />
               )}
@@ -287,6 +292,14 @@ export default function Gallery() {
       </motion.div>
       {hasMore && (
         <div ref={observerRef} style={{ height: '1px', transform: 'translateY(-5rem)' }} />
+      )}
+      <div style={{ height: '3rem' }}></div>
+      {selectedPhotoId && (
+        <AnimatePresence mode="wait">
+          <ImageDetailView
+            id={selectedPhotoId}
+          />
+        </AnimatePresence>
       )}
     </div>
   );

@@ -2,8 +2,10 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
 
-export async function GET(req, { params }) {
-  const { id } = params;
+export async function GET(req) {
+  const url = new URL(req.url);
+  const segments = url.pathname.split('/');
+  const id = segments[segments.length - 2];
 
   try {
     const metaPath = path.join(process.cwd(), 'photos', id, `${id}_meta.json`);
