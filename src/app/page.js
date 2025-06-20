@@ -21,8 +21,6 @@ export default function Gallery() {
   const [hasMore, setHasMore] = useState(true); // Boolean that's true if there are more images to load
   const [allFilters, setAllFilters] = useState({}); // Object of all filter settings
   const [noneMatching, setNoneMatching] = useState(false);
-  // Initialize shouldAnimate based on whether we have saved state
-  const [shouldAnimate, setShouldAnimate] = useState(true)
   const [hasReturnedToGallery, setHasReturnedToGallery] = useState(false);
   const [wasImageOpen, setWasImageOpen] = useState(false);
   const observerRef = useRef(); // Reference for the intersection observer
@@ -79,8 +77,6 @@ export default function Gallery() {
   // Load next batch of photos
   const loadNextBatch = (photoList, currentVisible) => {
     if (loading) return;
-
-    setShouldAnimate(true);
 
     setLoading(true);
     const nextPhotos = photoList.slice(currentVisible.length, currentVisible.length + PHOTOS_PER_PAGE); // Grabs the next batch of photos that haven’t been displayed yet, based on how many are currently visible
@@ -205,8 +201,6 @@ export default function Gallery() {
     setHasMore(newFilteredList.length > needed);
     setLoading(false);
 
-    setShouldAnimate(true);
-
     // Preload any new images
     additional.forEach(id => {
       if (!loadedImages.has(id)) {
@@ -278,12 +272,12 @@ export default function Gallery() {
           style={{ opacity: selectedPhotoId ? '0' : '1' }}
         >
           <AnimatePresence mode="popLayout">
-            {visiblePhotos.map((id, i) => (
+            {visiblePhotos.map((id) => (
               <motion.div
                 key={id}
                 layout
                 layoutId={`photo-${id}`}
-                initial={shouldAnimate ? { opacity: 0, scale: 0.8 } : null}
+                initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{
@@ -308,7 +302,7 @@ export default function Gallery() {
                     }}
                     style={{ all: 'unset', cursor: 'pointer' }}
                   >
-                    <GalleryImage id={id} index={i} shouldAnimate={shouldAnimate} />
+                    <GalleryImage id={id} />
                   </button>
                 ) : (
                   <GallerySkeleton />

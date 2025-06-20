@@ -1,10 +1,10 @@
-import { NavHeightProvider } from './contexts/NavHeightContext';
 import './globals.css';
+import { NavHeightProvider } from './contexts/NavHeightContext';
 import Navbar from './components/Navbar';
 import Head from 'next/head';
 
 export const metadata = {
-  title: "2031's Photo Collection",
+  title: "Philip's Photo Collection",
   description: 'Free downloads of my best photos.',
 };
 
