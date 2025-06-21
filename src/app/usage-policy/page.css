@@ -27,6 +27,11 @@ h3 {
     -webkit-text-fill-color: black;
 }
 
+.policies-container {
+    display: flex;
+    gap: 3rem;
+}
+
 .license-info-container {
     display: flex;
     flex-direction: column;
@@ -105,4 +110,38 @@ h3 {
 
 #blue {
     color: #0151B9;
+}
+
+@media (max-width: 850px) {
+    .policies-container {
+        flex-direction: column;
+        padding: 0 1rem;
+        width: 100%;
+        gap: 2rem;
+    }
+
+    .license-card {
+        width: 100%;
+        gap: 2rem;
+    }
+
+    h2 {
+        font-size: 2.25rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    .info-label, .info-content {
+        font-size: 1rem;
+    }
+
+    .term-box-label {
+        font-size: .8rem;
+    }
+
+    .license-card p {
+        font-size: .8rem;
+    }
 }

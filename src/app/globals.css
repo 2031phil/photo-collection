@@ -1,3 +1,7 @@
+:root {
+    --scale-factor: 1;
+}
+
 * {
     margin: 0;
     box-sizing: border-box;
@@ -7,6 +11,25 @@
 h1 {
     font-size: 4rem;
     font-weight: 700;
+}
+
+nav {
+    padding: 2rem 4rem;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1100;
+}
+
+nav div {
+    display: flex;
+    gap: 1rem;
+}
+
+#monogram {
+    width: 4rem;
+    height: 4rem;
 }
 
 .nav-item {
@@ -142,6 +165,74 @@ label {
     color: black;
 }
 
+.filter-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .75rem 2rem;
+    margin-bottom: 4rem;
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, .9);
+    position: sticky;
+    top: 1rem;
+    z-index: 10;
+    transition: .2s,
+}
+
+.detail-view-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    padding: 0 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.image-and-license-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    width: 100%;
+    height: 60vh;
+}
+
+.license-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, .5);
+    border-radius: 1rem;
+    width: 25%;
+}
+
+.tag-container {
+    display: flex;
+    gap: .5rem;
+    position: absolute;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.image-container {
+    max-width: 75%;
+    height: 100%;
+    position: relative;
+}
+
+.detail-image {
+    border-radius: 1rem;
+    max-width: 100%;
+    display: block;
+    height: 100%;
+}
+
 @keyframes jumpOpen {
     0% {
         transform: scale(0);
@@ -168,10 +259,115 @@ label {
 }
 
 @keyframes skeletonAnimation {
-  0% {
-    background-position: 0% 0%;
-  }
-  90%, 100% {
-    background-position: 150% 0%;
-  }
+    0% {
+        background-position: 0% 0%;
+    }
+
+    90%,
+    100% {
+        background-position: 150% 0%;
+    }
+}
+
+@media (max-width: 1250px) {
+    :root {
+        --scale-factor: 0.9;
+    }
+}
+
+@media (max-width: 1200px) {
+    nav {
+        padding: 2rem 3rem;
+    }
+}
+
+@media (max-width: 850px) {
+    :root {
+        --scale-factor: 0.8;
+    }
+
+    .label {
+        padding: .4rem .7rem;
+        gap: .2rem;
+    }
+
+    .label-text {
+        font-size: .9rem;
+    }
+
+    nav {
+        padding: 1rem;
+    }
+
+    nav div {
+        gap: .5rem;
+    }
+
+    .filter-container {
+        justify-content: start;
+        padding: .75rem 1.25rem;
+        gap: 1rem;
+        overflow-x: scroll;
+        margin-bottom: 2rem;
+    }
+
+    .filter-section {
+        gap: .5rem;
+    }
+
+    .filter-section-title {
+        white-space: nowrap;
+        font-size: 1.25rem;
+    }
+
+    .filter-section-label-container {
+        gap: .25rem;
+    }
+
+    #monogram {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    h1 {
+        font-size: 2.75rem;
+        text-align: center;
+    }
+
+    .detail-view-container {
+        padding: 0 1rem;
+        overflow-y: scroll;
+    }
+
+    .image-and-license-container {
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        gap: 8rem;
+    }
+
+    .image-container {
+        width: 100%;
+        height: auto;
+        max-width: none;
+    }
+
+    .license-container {
+        width: 100%;
+        justify-content: start;
+        gap: 4rem;
+    }
+
+    .extra-padding {
+        height: 40px;
+        width: 100%;
+    }
+
+    .tag-container {
+        width: 100% !important;
+    }
+
+    .detail-image {
+        height: auto;
+    }
 }
