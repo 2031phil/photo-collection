@@ -144,4 +144,8 @@ h3 {
     .license-card p {
         font-size: .8rem;
     }
+
+    .term-box {
+        height: auto;
+    }
 }

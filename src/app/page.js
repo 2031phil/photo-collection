@@ -24,13 +24,29 @@ export default function Gallery() {
   const [noneMatching, setNoneMatching] = useState(false);
   const [hasReturnedToGallery, setHasReturnedToGallery] = useState(false);
   const [wasImageOpen, setWasImageOpen] = useState(false);
+  const [photosPerPage, setPhotosPerPage] = useState(30);
   const observerRef = useRef(); // Reference for the intersection observer
-  const PHOTOS_PER_PAGE = 30; // Number of photos per batch
   const searchParams = useSearchParams();
   const selectedPhotoId = searchParams.get('image');
   const { navHeight } = useNavHeight();
 
   useResponsiveIconScale('.icons');
+
+  // Change batch size based on vw
+  useEffect(() => {
+    const updatePhotosPerPage = () => {
+      const width = window.innerWidth;
+      if (width < 850) {
+        setPhotosPerPage(10);
+      } else {
+        setPhotosPerPage(30);
+      }
+    };
+
+    updatePhotosPerPage(); // Run on mount
+    window.addEventListener('resize', updatePhotosPerPage);
+    return () => window.removeEventListener('resize', updatePhotosPerPage);
+  }, []);
 
   // Fetch all photos on mount
   useEffect(() => {
@@ -82,7 +98,11 @@ export default function Gallery() {
     if (loading) return;
 
     setLoading(true);
-    const nextPhotos = photoList.slice(currentVisible.length, currentVisible.length + PHOTOS_PER_PAGE); // Grabs the next batch of photos that haven’t been displayed yet, based on how many are currently visible
+
+    // Get next batch, ensuring no duplicates
+    const nextPhotos = photoList
+      .slice(currentVisible.length, currentVisible.length + photosPerPage)
+      .filter(id => !currentVisible.includes(id)); // Extra safety against duplicates
 
     if (nextPhotos.length === 0) {
       setHasMore(false);
@@ -174,9 +194,9 @@ export default function Gallery() {
   const handleFilterChange = (newFilteredList) => {
     // If all filters are cleared, reset to original order
     if (newFilteredList.length === allPhotos.length && newFilteredList === allPhotos) {
-      const firstPage = allPhotos.slice(0, PHOTOS_PER_PAGE);
+      const firstPage = allPhotos.slice(0, photosPerPage);
       setVisiblePhotos(firstPage);
-      setHasMore(allPhotos.length > PHOTOS_PER_PAGE);
+      setHasMore(allPhotos.length > photosPerPage);
       setLoading(false);
 
       // Preload first page if needed
@@ -190,22 +210,17 @@ export default function Gallery() {
       return;
     }
 
-    // Find currently visible photos that match the new filter
-    const matchingVisible = visiblePhotos.filter(id => newFilteredList.includes(id));
+    // Always start fresh with the filtered list order
+    // Take the first page worth of photos from the new filtered list
+    const needed = Math.min(photosPerPage, newFilteredList.length);
+    const newVisible = newFilteredList.slice(0, needed);
 
-    // Calculate how many more we need for first page
-    const needed = Math.min(PHOTOS_PER_PAGE, newFilteredList.length);
-    const additional = newFilteredList.slice(0, needed).filter(id => !matchingVisible.includes(id));
-
-    // Set new visible photos: matching ones first, then additional (ensure uniqueness)
-    const combined = [...matchingVisible, ...additional];
-    const newVisible = [...new Set(combined)].slice(0, needed);
     setVisiblePhotos(newVisible);
     setHasMore(newFilteredList.length > needed);
     setLoading(false);
 
-    // Preload any new images
-    additional.forEach(id => {
+    // Preload any new images that aren't already loaded
+    newVisible.forEach(id => {
       if (!loadedImages.has(id)) {
         const img = new Image();
         img.onload = () => setLoadedImages(prev => new Set([...prev, id]));
@@ -257,75 +272,78 @@ export default function Gallery() {
   }
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key="gallery"
-        className="gallery-page-container"
-        style={{ marginTop: !selectedPhotoId ? 0 : navHeight }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <GalleryTitle selectedPhotoId={selectedPhotoId} />
-        <Filter onFilterChange={setAllFilters} selectedPhotoId={selectedPhotoId} />
+    <>
+      <div id='dropdown-portal'></div>
+      <AnimatePresence mode="wait">
         <motion.div
-          className='gallery-grid'
-          layout
-          style={{ opacity: selectedPhotoId ? '0' : '1' }}
+          key="gallery"
+          className="gallery-page-container"
+          style={{ marginTop: !selectedPhotoId ? 0 : navHeight }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
         >
-          <AnimatePresence mode="popLayout">
-            {visiblePhotos.map((id) => (
-              <motion.div
-                key={id}
-                layout
-                layoutId={`photo-${id}`}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{
-                  layout: { duration: 0.3, ease: "easeInOut" },
-                  opacity: { duration: 0.2 },
-                  scale: { duration: 0.2 }
-                }}
-                style={{ overflow: 'hidden', borderRadius: '.5rem', aspectRatio: '1/1', position: 'relative' }}
-                className='img-container'
-              >
-                {loadedImages.has(id) ? (
-                  <button
-                    onClick={(e) => {
-                      const button = e.currentTarget;
-                      const container = button.closest('.img-container');
-                      if (container) container.classList.add('elevated');
+          <GalleryTitle selectedPhotoId={selectedPhotoId} />
+          <Filter onFilterChange={setAllFilters} selectedPhotoId={selectedPhotoId} />
+          <motion.div
+            className='gallery-grid'
+            layout
+            style={{ opacity: selectedPhotoId ? '0' : '1' }}
+          >
+            <AnimatePresence mode="popLayout">
+              {visiblePhotos.map((id) => (
+                <motion.div
+                  key={id}
+                  layout
+                  layoutId={`photo-${id}`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{
+                    layout: { duration: 0.3, ease: "easeInOut" },
+                    opacity: { duration: 0.2 },
+                    scale: { duration: 0.2 }
+                  }}
+                  style={{ overflow: 'hidden', borderRadius: '.5rem', aspectRatio: '1/1', position: 'relative' }}
+                  className='img-container'
+                >
+                  {loadedImages.has(id) ? (
+                    <button
+                      onClick={(e) => {
+                        const button = e.currentTarget;
+                        const container = button.closest('.img-container');
+                        if (container) container.classList.add('elevated');
 
-                      const url = new URL(window.location);
-                      url.searchParams.set('image', id);
-                      window.history.pushState({}, '', url);
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    style={{ all: 'unset', cursor: 'pointer' }}
-                  >
-                    <GalleryImage id={id} />
-                  </button>
-                ) : (
-                  <GallerySkeleton />
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                        const url = new URL(window.location);
+                        url.searchParams.set('image', id);
+                        window.history.pushState({}, '', url);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      style={{ all: 'unset', cursor: 'pointer' }}
+                    >
+                      <GalleryImage id={id} />
+                    </button>
+                  ) : (
+                    <GallerySkeleton />
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+          {hasMore && (
+            <div ref={observerRef} style={{ height: '1px', transform: 'translateY(-5rem)' }} />
+          )}
+          <div style={{ height: '3rem' }}></div>
+          {selectedPhotoId && (
+            <AnimatePresence mode="wait">
+              <ImageDetailView
+                id={selectedPhotoId}
+              />
+            </AnimatePresence>
+          )}
         </motion.div>
-        {hasMore && (
-          <div ref={observerRef} style={{ height: '1px', transform: 'translateY(-5rem)' }} />
-        )}
-        <div style={{ height: '3rem' }}></div>
-        {selectedPhotoId && (
-          <AnimatePresence mode="wait">
-            <ImageDetailView
-              id={selectedPhotoId}
-            />
-          </AnimatePresence>
-        )}
-      </motion.div>
-    </AnimatePresence>
+      </AnimatePresence>
+    </>
   );
 }

@@ -335,8 +335,10 @@ label {
     }
 
     .detail-view-container {
-        padding: 0 1rem;
+        padding: 9rem 1rem 0 1rem;
         overflow-y: scroll;
+        justify-content: start;
+        height: 100%;
     }
 
     .image-and-license-container {
@@ -344,6 +346,8 @@ label {
         justify-content: start;
         align-items: center;
         gap: 8rem;
+        height: auto;
+        margin-bottom: 4rem;
     }
 
     .image-container {
@@ -358,16 +362,20 @@ label {
         gap: 4rem;
     }
 
-    .extra-padding {
-        height: 40px;
-        width: 100%;
-    }
-
     .tag-container {
         width: 100% !important;
     }
 
     .detail-image {
         height: auto;
+    }
+
+    .filter-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-container {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 }
