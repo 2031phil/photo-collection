@@ -51,7 +51,7 @@ export default function Dropdown({ onSelect, text, options = [] }) {
     return (
         <>
             {shouldRenderDropdown && isMobile && createPortal(
-                <div className='standard-blur' style={{ position: 'fixed', display: 'flex', width: '100vw', height: '100vh', justifyContent: 'center', alignItems: 'center', top: '0', left: '0', zIndex: '100', padding: '0 8rem', borderRadius: '1.25rem', background: 'rgba(255, 255, 255, .5)', transform: 'scale(1.5)', transition: '.3s' }}>
+                <div className='standard-blur' style={{ position: 'fixed', display: 'flex', width: '100vw', height: '100vh', justifyContent: 'center', alignItems: 'center', top: '0', left: '0', zIndex: '100', padding: '0 7rem', borderRadius: '1.25rem', background: 'rgba(255, 255, 255, .5)', transform: 'scale(1.5)', transition: '.3s' }}>
                     <OptionsList
                         options={options}
                         selectedOption={selectedOption}

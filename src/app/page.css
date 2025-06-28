@@ -16,6 +16,18 @@
     z-index: 1000;
 }
 
+@media (min-width: 1700px) {
+    .gallery-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+@media (min-width: 2000px) {
+    .gallery-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+
 @media (max-width: 1350px) {
     .gallery-grid {
         grid-template-columns: repeat(5, 1fr);

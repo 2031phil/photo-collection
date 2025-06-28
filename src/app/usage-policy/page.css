@@ -149,3 +149,13 @@ h3 {
         height: auto;
     }
 }
+
+@media (max-width: 375px) {
+    .policies-container {
+        padding: 0 .5rem;
+    }
+
+    .license-card {
+        padding: 1rem;
+    }
+}

@@ -81,7 +81,7 @@ export default function ImageDetailView({ id }) {
           layoutId={`photo-${activePhotoId}`}
           className='image-container'
         >
-          <div style={{ width: 'fit-content', position: 'absolute', top: '-3rem' }}>
+          <div style={{ width: 'fit-content', position: 'absolute', top: '-3.6rem' }}>
             <Pressable
               icon={
                 <svg className='icons' xmlns="http://www.w3.org/2000/svg" width="15" height="13" viewBox="0 0 15 13" fill="none">
@@ -90,7 +90,6 @@ export default function ImageDetailView({ id }) {
               }
               text="Back"
               onClick={() => {
-                // setImgSrc(`/api/photos/${activePhotoId}/small`);
                 if (
                   (typeof document !== 'undefined' && document.referrer && document.referrer.includes('/gallery')) ||
                   (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.origin + '/gallery'))
@@ -165,7 +164,7 @@ export default function ImageDetailView({ id }) {
             className="standard-border standard-blur license-container"
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
+            transition={{ duration: 0.4, delay: 0.4, ease: 'easeOut' }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               <h1 style={{ width: '100%', textAlign: 'center', fontSize: '2.25rem', fontWeight: '700' }}>Image #{activePhotoId}</h1>
@@ -231,7 +230,7 @@ export default function ImageDetailView({ id }) {
                 >
                   <label htmlFor='condition' style={{ display: 'flex', gap: '1rem', alignItems: 'start', fontSize: '.875rem', fontWeight: '400' }}>
                     <input
-                      style={{ marginTop: '.4rem', transform: 'scale(1.4)', cursor: 'pointer' }}
+                      style={{ marginTop: '.3rem', transform: 'scale(1.4)', cursor: 'pointer' }}
                       type='checkbox'
                       id='condition'
                       name='usageAgreement'
