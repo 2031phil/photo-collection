@@ -38,6 +38,8 @@ export default function Gallery() {
       const width = window.innerWidth;
       if (width < 850) {
         setPhotosPerPage(10);
+      } else if (width > 2000) {
+        setPhotosPerPage(40)
       } else {
         setPhotosPerPage(30);
       }
