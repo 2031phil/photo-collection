@@ -2,23 +2,45 @@ import { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
 import { motion } from 'framer-motion';
 import Pressable from './Pressable';
+import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 
-export default function Filter({ onFilterChange, selectedPhotoId }) {
+export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
 
-    // States tracking filters
-    const [selectedWallpaper, setSelectedWallpaper] = useState(null);
-    const [selectedTimeOfDay, setSelectedTimeOfDay] = useState(null);
-    const [selectedCountry, setSelectedCountry] = useState(null);
-    const [selectedEnvironment, setSelectedEnvironment] = useState(null);
+    useResponsiveIconScale('.icons');
+
+    const [countryOptions, setCountryOptions] = useState([]);
+    const [environmentOptions, setEnvironmentOptions] = useState([]);
+
+    function capitalizeWords(str) {
+        return str
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
 
     useEffect(() => {
-        onFilterChange?.({
-            orientation: selectedWallpaper ? (selectedWallpaper === "Desktop" ? "landscape" : "portrait") : null,
-            country: selectedCountry?.toLowerCase() ?? null,
-            environment: selectedEnvironment?.toLowerCase() ?? null,
-            time_of_day: selectedTimeOfDay?.toLowerCase() ?? null
-        });
-    }, [selectedWallpaper, selectedCountry, selectedEnvironment, selectedTimeOfDay]);
+        async function fetchCountries() {
+            const res = await fetch('/api/photo-filters/country');
+            if (res.ok) {
+                const data = await res.json();
+
+                setCountryOptions(data.map(capitalizeWords));
+            }
+        }
+        fetchCountries();
+    }, []);
+
+    useEffect(() => {
+        async function fetchEnvironments() {
+            const res = await fetch('/api/photo-filters/environment');
+            if (res.ok) {
+                const data = await res.json();
+
+                setEnvironmentOptions(data.map(capitalizeWords));
+            }
+        }
+        fetchEnvironments();
+    }, []);
 
     return (
         <div id='filterWrapper'>
@@ -33,8 +55,14 @@ export default function Filter({ onFilterChange, selectedPhotoId }) {
                                 </svg>
                             }
                             text="Desktop"
-                            clicked={selectedWallpaper === 'Desktop'}
-                            onClick={() => setSelectedWallpaper(prev => prev === 'Desktop' ? null : 'Desktop')}
+                            clicked={filters.orientation === 'landscape'}
+                            onClick={() => {
+                                onFilterChange({
+                                    ...filters,
+                                    orientation:
+                                        filters.orientation === 'landscape' ? null : 'landscape'
+                                });
+                            }}
                         />
                         <Pressable
                             icon={
@@ -43,8 +71,14 @@ export default function Filter({ onFilterChange, selectedPhotoId }) {
                                 </svg>
                             }
                             text="Phone"
-                            clicked={selectedWallpaper === 'Phone'}
-                            onClick={() => setSelectedWallpaper(prev => prev === 'Phone' ? null : 'Phone')}
+                            clicked={filters.orientation === 'portrait'}
+                            onClick={() => {
+                                onFilterChange({
+                                    ...filters,
+                                    orientation:
+                                        filters.orientation === 'portrait' ? null : 'portrait'
+                                });
+                            }}
                         />
                     </div>
                 </div>
@@ -54,13 +88,25 @@ export default function Filter({ onFilterChange, selectedPhotoId }) {
                     <motion.div layout="position" className='filter-section-label-container'>
                         <Dropdown
                             text="All Countries"
-                            options={["Azerbaijan", "Georgia", "Germany", "Italy", "Norway", "Sweden"]}
-                            onSelect={setSelectedCountry}
+                            options={countryOptions}
+                            value={filters.country ? capitalizeWords(filters.country) : null}
+                            onSelect={(value) =>
+                                onFilterChange({
+                                    ...filters,
+                                    country: value ? value.toLowerCase() : null
+                                })
+                            }
                         />
                         <Dropdown
                             text="All Environments"
-                            options={["Airport", "Interior", "Nature", "Rural", "Urban"]}
-                            onSelect={setSelectedEnvironment}
+                            options={environmentOptions}
+                            value={filters.environment ? capitalizeWords(filters.environment) : null}
+                            onSelect={(value) =>
+                                onFilterChange({
+                                    ...filters,
+                                    environment: value ? value.toLowerCase() : null
+                                })
+                            }
                         />
                     </motion.div>
                 </motion.div>
@@ -75,8 +121,13 @@ export default function Filter({ onFilterChange, selectedPhotoId }) {
                                 </svg>
                             }
                             text="Day"
-                            clicked={selectedTimeOfDay === 'Day'}
-                            onClick={() => setSelectedTimeOfDay(prev => prev === 'Day' ? null : 'Day')}
+                            clicked={filters.time_of_day === 'day'}
+                            onClick={() =>
+                                onFilterChange({
+                                    ...filters,
+                                    time_of_day: filters.time_of_day === 'day' ? null : 'day'
+                                })
+                            }
                         />
                         <Pressable
                             icon={
@@ -85,8 +136,13 @@ export default function Filter({ onFilterChange, selectedPhotoId }) {
                                 </svg>
                             }
                             text="Night"
-                            clicked={selectedTimeOfDay === 'Night'}
-                            onClick={() => setSelectedTimeOfDay(prev => prev === 'Night' ? null : 'Night')}
+                            clicked={filters.time_of_day === 'night'}
+                            onClick={() =>
+                                onFilterChange({
+                                    ...filters,
+                                    time_of_day: filters.time_of_day === 'night' ? null : 'night'
+                                })
+                            }
                         />
                         <Pressable
                             icon={
@@ -95,8 +151,13 @@ export default function Filter({ onFilterChange, selectedPhotoId }) {
                                 </svg>
                             }
                             text="Twilight"
-                            clicked={selectedTimeOfDay === 'Twilight'}
-                            onClick={() => setSelectedTimeOfDay(prev => prev === 'Twilight' ? null : 'Twilight')}
+                            clicked={filters.time_of_day === 'twilight'}
+                            onClick={() =>
+                                onFilterChange({
+                                    ...filters,
+                                    time_of_day: filters.time_of_day === 'twilight' ? null : 'twilight'
+                                })
+                            }
                         />
                     </div>
                 </div>

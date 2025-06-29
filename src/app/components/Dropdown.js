@@ -2,24 +2,33 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import OptionsList from './OptionsList';
+import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 
-export default function Dropdown({ onSelect, text, options = [] }) {
+export default function Dropdown({ onSelect, text, options = [], value }) {
+
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(null);
-    const dropdownRef = useRef(null); //persistent reference to the dom element with "ref={dropdownRef}" 
+    const [selectedOption, setSelectedOption] = useState(value || null);
+    const dropdownRef = useRef(null);
     const [shouldRenderDropdown, setShouldRenderDropdown] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+
+    useResponsiveIconScale('.icons', selectedOption);
+
+    // Sync internal state with value prop
+    useEffect(() => {
+        setSelectedOption(value || null);
+    }, [value]);
 
     useEffect(() => {
         const checkIsMobile = () => setIsMobile(window.innerWidth < 850);
 
-        checkIsMobile(); // check initially
+        checkIsMobile();
         window.addEventListener('resize', checkIsMobile);
 
         return () => window.removeEventListener('resize', checkIsMobile);
     }, []);
 
-    useEffect(() => { //When isOpen becomes true, this function is triggered. It adds a mousedown event listener to the whole document and then checks, when the listener is triggered, if the click was outside of the dropdown.
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsOpen(false);
@@ -29,7 +38,7 @@ export default function Dropdown({ onSelect, text, options = [] }) {
         if (isOpen) {
             setShouldRenderDropdown(true);
         } else {
-            const timeout = setTimeout(() => setShouldRenderDropdown(false), 280); // almost match jumpClose duration to ensure that no accidental flickering occurs
+            const timeout = setTimeout(() => setShouldRenderDropdown(false), 280);
             return () => clearTimeout(timeout);
         }
 
@@ -48,6 +57,12 @@ export default function Dropdown({ onSelect, text, options = [] }) {
         setIsOpen(false);
     };
 
+    const handleClear = (e) => {
+        e.stopPropagation();
+        setSelectedOption(null);
+        onSelect(null);
+    };
+
     return (
         <>
             {shouldRenderDropdown && isMobile && createPortal(
@@ -64,23 +79,19 @@ export default function Dropdown({ onSelect, text, options = [] }) {
             )}
             <div ref={dropdownRef} className="dropdown-container" style={{ position: 'relative', borderRadius: '1.25rem' }}>
 
-                <div //The Button
-                    role="button" //For accessibility 
-                    tabIndex={0} //For accessibility 
+                <div
+                    role="button"
+                    tabIndex={0}
                     className={`label border-hover pointer standard-blur standard-border${selectedOption ? ' gradient-border-20' : ''}`}
                     onClick={() => setIsOpen((prev) => !prev)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev); }} //For accessibility 
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev); }}
                 >
                     <span className="label-text">{selectedOption || text}</span>
 
                     <div className="icon-container">
                         {selectedOption ? (
                             <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedOption(null);
-                                    onSelect(null);
-                                }}
+                                onClick={handleClear}
                                 style={{
                                     background: 'none',
                                     border: 'none',
@@ -106,7 +117,7 @@ export default function Dropdown({ onSelect, text, options = [] }) {
 
                 </div>
 
-                {shouldRenderDropdown && !isMobile && ( //The Dropdown
+                {shouldRenderDropdown && !isMobile && (
                     <OptionsList
                         options={options}
                         selectedOption={selectedOption}

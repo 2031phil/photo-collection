@@ -16,6 +16,11 @@
     z-index: 1000;
 }
 
+#noPhotosText {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
 @media (min-width: 1700px) {
     .gallery-grid {
         grid-template-columns: repeat(7, 1fr);
@@ -51,6 +56,14 @@
 
     .gallery-page-container {
         padding: 0 1rem;
+    }
+
+    #noPhotosIcon {
+        width: 8rem;
+    }
+
+    #noPhotosText {
+        font-size: 1.5rem;
     }
 }
 
