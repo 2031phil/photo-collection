@@ -13,7 +13,7 @@ export default function Selector({ onSelect, text, options = [] }) {
             setSelectedOption(options[0]);
             onSelect(0); // Notify parent that the first option is selected (by default)
         }
-    }, []);
+    }, [onSelect, options]);
 
     useEffect(() => { //When isOpen becomes true, this function is triggered. It adds a mousedown event listener to the whole document and then checks, when the listener is triggered, if the click was outside of the dropdown.
         const handleClickOutside = (event) => {
