@@ -8,7 +8,7 @@ export async function GET(req) {
   const id = segments[segments.length - 2];
 
   try {
-    const metaPath = path.join(process.cwd(), 'photos', id, `${id}_meta.json`);
+    const metaPath = path.join(process.cwd(), 'metadata', `${id}_meta.json`);
     const file = await fs.readFile(metaPath, 'utf8');
     const data = JSON.parse(file);
     return NextResponse.json(data);

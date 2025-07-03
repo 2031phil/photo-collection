@@ -1,0 +1,11 @@
+{
+  "filename": "0004_large.jpg",
+  "orientation": "landscape",
+  "country": "azerbaijan",
+  "environment": "rural",
+  "time_of_day": "twilight",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}

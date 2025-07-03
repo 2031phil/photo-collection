@@ -1,0 +1,11 @@
+{
+  "filename": "0085_large.jpg",
+  "orientation": "landscape",
+  "country": "azerbaijan",
+  "environment": "sports",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}

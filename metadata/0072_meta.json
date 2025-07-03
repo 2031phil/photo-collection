@@ -1,0 +1,11 @@
+{
+  "filename": "0072_large.jpg",
+  "orientation": "landscape",
+  "country": "czech republic",
+  "environment": "urban",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}

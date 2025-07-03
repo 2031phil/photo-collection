@@ -1,0 +1,11 @@
+{
+  "filename": "0079_large.jpg",
+  "orientation": "landscape",
+  "country": "germany",
+  "environment": "rural",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": true
+  }
+}

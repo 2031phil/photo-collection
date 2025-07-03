@@ -1,0 +1,11 @@
+{
+  "filename": "0011_large.jpg",
+  "orientation": "landscape",
+  "country": "italy",
+  "environment": "urban",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}
