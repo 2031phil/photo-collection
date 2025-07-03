@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { join } from 'path';
 import { createReadStream, existsSync } from 'fs';
 import { stat } from 'fs/promises';
-import { env } from 'process';
 
 // This function is necessary to retrieve the actual photos
 export async function GET(req) {

@@ -2,6 +2,7 @@ import './globals.css';
 import { NavHeightProvider } from './contexts/NavHeightContext';
 import Navbar from './components/Navbar';
 import Head from 'next/head';
+import { Suspense } from 'react';
 
 export const metadata = {
   title: "Philip's Photo Collection",
@@ -20,14 +21,16 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
-        <NavHeightProvider>
-          <div className="background-wrapper" />
-          <Navbar />
-          <main>
-            {children}
-          </main>
-          <link rel="stylesheet" href="https://use.typekit.net/lbq0rfz.css" />
-        </NavHeightProvider>
+        <Suspense>
+          <NavHeightProvider>
+            <div className="background-wrapper" />
+            <Navbar />
+            <main>
+              {children}
+            </main>
+            <link rel="stylesheet" href="https://use.typekit.net/lbq0rfz.css" />
+          </NavHeightProvider>
+        </Suspense>
       </body>
     </html>
   );

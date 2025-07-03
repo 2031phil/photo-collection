@@ -59,21 +59,21 @@ export default function ImageDetailView({ id }) {
   }, [activePhotoId]);
 
   const handleDownload = async () => {
-  try {
-    await fetch(`/api/downloads/${activePhotoId}`, {
-      method: 'POST',
-    });
-  } catch (error) {
-    console.error('Error recording download:', error);
-  }
+    try {
+      await fetch(`/api/downloads/${activePhotoId}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.error('Error recording download:', error);
+    }
 
-  const link = document.createElement('a');
-  link.href = `/api/photos/${activePhotoId}/large`;
-  link.download = `photo-${activePhotoId}.jpg`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
+    const link = document.createElement('a');
+    link.href = `/api/photos/${activePhotoId}/large`;
+    link.download = `photo-${activePhotoId}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <motion.div
