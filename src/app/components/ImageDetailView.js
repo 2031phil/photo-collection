@@ -4,8 +4,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import Selector from '@/app/components/Selector';
 import Label from '@/app/components/Label';
-import '@/app/globals.css';
 import tagMappings from '@/utils/tagMappings';
+import '@/app/globals.css';
 import Pressable from '@/app/components/Pressable';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 

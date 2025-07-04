@@ -11,6 +11,7 @@ import { useSearchParams } from 'next/navigation';
 import ImageDetailView from './components/ImageDetailView';
 import { useNavHeight } from './contexts/NavHeightContext';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
+import Onboarding from './components/Onboarding';
 
 export default function Gallery() {
 
@@ -26,6 +27,7 @@ export default function Gallery() {
   const [wasImageOpen, setWasImageOpen] = useState(false);
   const [photosPerPage, setPhotosPerPage] = useState(30);
   const [shouldAnimate, setShouldAnimate] = useState(true); //Used to stop gallery container from reanimating when filters are changed
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true);
   const observerRef = useRef(); // Reference for the intersection observer
   const searchParams = useSearchParams();
   const selectedPhotoId = searchParams.get('image');
@@ -74,11 +76,14 @@ export default function Gallery() {
     }
   }, [selectedPhotoId, wasImageOpen]);
 
-  // Prevent scrolling while image overlay is open
+  // Prevent scrolling while image overlay is open or onboarding is shown
   useEffect(() => {
-    document.body.style.overflow = selectedPhotoId ? 'hidden' : '';
-    return () => (document.body.style.overflow = '');
-  }, [selectedPhotoId]);
+    const shouldBlockScroll = selectedPhotoId || !hasSeenOnboarding;
+    document.body.style.overflow = shouldBlockScroll ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedPhotoId, hasSeenOnboarding]);
 
   // Resetting the higher z-index of the last opened image after return animation has finished
   useEffect(() => {
@@ -236,6 +241,19 @@ export default function Gallery() {
     });
   };
 
+  // Determine if onboarding should be shown
+  useEffect(() => {
+    const seen = localStorage.getItem('seenOnboarding');
+    if (!seen) {
+      setHasSeenOnboarding(false);
+    }
+  }, []);
+
+  const handleOnboardingClose = () => {
+    localStorage.setItem('seenOnboarding', 'true');
+    setHasSeenOnboarding(true);
+  };
+
   if (filteredPhotos.length === 0 && !noneMatching) {
     return (
       <AnimatePresence mode="wait">
@@ -280,6 +298,11 @@ export default function Gallery() {
 
   return (
     <>
+      {!hasSeenOnboarding && (
+        <Onboarding
+          onClose={handleOnboardingClose}
+        />
+      )}
       <div id='dropdown-portal'></div>
       <AnimatePresence mode="wait">
         <motion.div
@@ -312,7 +335,7 @@ export default function Gallery() {
                     opacity: { duration: 0.2 },
                     scale: { duration: 0.2 }
                   }}
-                  style={{ overflow: 'hidden', borderRadius: '.5rem', aspectRatio: '1/1', position: 'relative' }}
+                  style={{ overflow: 'hidden', borderRadius: '1rem', aspectRatio: '1/1', position: 'relative' }}
                   className='img-container'
                 >
                   {loadedImages.has(id) ? (

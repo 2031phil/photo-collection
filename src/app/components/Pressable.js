@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import Label from './Label';
 
-export default function Pressable({ icon, text, clicked, onClick }) {
+export default function Pressable({ icon, text, clicked, onClick, iconPosition, larger }) {
     const [isPressed, setIsPressed] = useState(false);
     const pressTimeout = useRef(null);
     const pressStartTime = useRef(null);
@@ -41,8 +41,8 @@ export default function Pressable({ icon, text, clicked, onClick }) {
             icon={icon}
             text={text}
             onClick={handleClick}
-            className={`label border-hover pointer standard-blur standard-border${clicked ? ' gradient-border-20' : ''}`}
-            style={{ transform: isPressed ? 'scale(0.9)' : 'scale(1)' }}
+            className={`label border-hover pointer standard-blur standard-border ${clicked ? ' gradient-border-20' : ''} ${larger ? 'larger' : ''}`}
+            style={{ transform: isPressed ? 'scale(0.9)' : 'scale(1)', flexDirection: iconPosition === "right" ? 'row-reverse' : 'row' }}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}

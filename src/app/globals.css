@@ -80,6 +80,17 @@ label {
     -ms-user-select: none;
 }
 
+.label.larger {
+    padding: 1.2rem 1.75rem;
+    gap: .75rem;
+    border-radius: 3rem;
+    border-width: 2px;
+}
+
+.label.larger span {
+    font-size: 1.5rem;
+}
+
 .pointer {
     cursor: pointer;
 }
@@ -229,7 +240,6 @@ label {
 
 .detail-image {
     border-radius: 1rem;
-    /* max-width: 100%; */
     display: block;
     height: 35rem;
 }
