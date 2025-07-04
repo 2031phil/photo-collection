@@ -135,7 +135,7 @@ export default function Onboarding({ onClose }) {
                         iconPosition="right"
                         larger={true}
                     />
-                    <div style={{ margin: '-2rem 0 1rem 0' }} />
+                    <div className='spacer' />
                 </motion.div>
             )}
         </AnimatePresence>
