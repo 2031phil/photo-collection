@@ -30,6 +30,7 @@ nav div {
 #monogram {
     width: 4rem;
     height: 4rem;
+    overflow: visible;
 }
 
 .nav-item {
