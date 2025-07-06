@@ -36,7 +36,9 @@ export async function GET(req) {
       headers: {
         'Content-Type': 'image/jpeg',
         'Content-Length': fileStat.size,
-        'Cache-Control': 'public, max-age=31536000',
+        // 'Cache-Control': 'public, max-age=31536000',
+        'Cache-Control': 'no-store',
+        'Vercel-CDN-Cache-Control': 'no-store',
       },
     });
   }
