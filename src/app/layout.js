@@ -1,25 +1,35 @@
 import './globals.css';
 import { NavHeightProvider } from './contexts/NavHeightContext';
 import Navbar from './components/Navbar';
-import Head from 'next/head';
 import { Suspense } from 'react';
 
 export const metadata = {
   title: "Philip's Photo Collection",
-  description: 'Free Downloads of High Quality Photos.',
+  description: "Free Downloads of High Quality Photos.",
+  openGraph: {
+    title: "Philip's Photo Collection",
+    description: "Free Downloads of High Quality Photos.",
+    url: "https://philips-photo-collection.vercel.app/",
+    siteName: "Philip's Photo Collection",
+    images: [
+      {
+        url: "https://philips-photo-collection.vercel.app/opengraph.png",
+        width: 1200,
+        height: 630,
+        alt: "Gallery preview",
+      },
+    ],
+    type: "website",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "https://philips-photo-collection.vercel.app/home-screen-icon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="preload" href="https://use.typekit.net/lbq0rfz.css" as="style" crossorigin="anonymous" />
-        <meta content="https://philips-photo-collection.vercel.app/opengraph.png" property="og:image" />
-        <link rel="apple-touch-icon" href="home-screen-icon.png" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <body>
         <Suspense fallback={<div />}>
           <NavHeightProvider>
