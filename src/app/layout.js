@@ -8,21 +8,6 @@ export const dynamic = 'force-static';
 export const metadata = {
   title: "Philip's Photo Collection",
   description: "Free Downloads of High Quality Photos.",
-  // openGraph: {
-  //   title: "Philip's Photo Collection",
-  //   description: "Free Downloads of High Quality Photos.",
-  //   url: "https://philips-photo-collection.vercel.app/",
-  //   siteName: "Philip's Photo Collection",
-  //   images: [
-  //     {
-  //       url: "https://philips-photo-collection.vercel.app/opengraph.png",
-  //       width: 1200,
-  //       height: 630,
-  //       alt: "Gallery preview",
-  //     },
-  //   ],
-  //   type: "website",
-  // },
   icons: {
     icon: "/favicon.ico",
     apple: "https://philips-photo-collection.vercel.app/home-screen-icon.png",
