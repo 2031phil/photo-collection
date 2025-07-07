@@ -3,6 +3,8 @@ import { NavHeightProvider } from './contexts/NavHeightContext';
 import Navbar from './components/Navbar';
 import { Suspense } from 'react';
 
+export const dynamic = 'force-static';
+
 export const metadata = {
   title: "Philip's Photo Collection",
   description: "Free Downloads of High Quality Photos.",
