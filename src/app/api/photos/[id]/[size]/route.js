@@ -20,7 +20,9 @@ export async function GET(req) {
     return new NextResponse(imageBuffer, {
       headers: {
         'Content-Type': 'image/jpeg',
-        'Cache-Control': 'public, max-age=31536000',
+        // 'Cache-Control': 'public, max-age=31536000',
+        'Cache-Control': 'no-store',
+        'Vercel-CDN-Cache-Control': 'no-store',
       },
     });
   } else {
@@ -36,9 +38,7 @@ export async function GET(req) {
       headers: {
         'Content-Type': 'image/jpeg',
         'Content-Length': fileStat.size,
-        // 'Cache-Control': 'public, max-age=31536000',
-        'Cache-Control': 'no-store',
-        'Vercel-CDN-Cache-Control': 'no-store',
+        'Cache-Control': 'public, max-age=31536000',
       },
     });
   }
