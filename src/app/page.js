@@ -13,6 +13,8 @@ import { useNavHeight } from './contexts/NavHeightContext';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 import Onboarding from './components/Onboarding';
 
+export const dynamic = 'force-static';
+
 export default function Gallery() {
 
   const [allPhotos, setAllPhotos] = useState([]); // Array of all photo ids
