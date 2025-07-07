@@ -20,9 +20,7 @@ export async function GET(req) {
     return new NextResponse(imageBuffer, {
       headers: {
         'Content-Type': 'image/jpeg',
-        // 'Cache-Control': 'public, max-age=31536000',
-        'Cache-Control': 'no-store',
-        'Vercel-CDN-Cache-Control': 'no-store',
+        'Cache-Control': 'public, max-age=31536000',
       },
     });
   } else {
