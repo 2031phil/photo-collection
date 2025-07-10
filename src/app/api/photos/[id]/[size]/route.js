@@ -13,7 +13,7 @@ export async function GET(req) {
 
   if (baseUrl) {
     const remoteUrl = `${baseUrl}/${id}/${id}_${size}.jpg`;
-    const proxyRes = await fetch(remoteUrl, { cache: 'no-cache' });
+    const proxyRes = await fetch(remoteUrl, { cache: 'no-store' });
     if (!proxyRes.ok) return new NextResponse('Not found', { status: 404 });
 
     const imageBuffer = await proxyRes.arrayBuffer();
