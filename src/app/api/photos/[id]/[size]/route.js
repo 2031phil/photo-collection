@@ -13,14 +13,14 @@ export async function GET(req) {
 
   if (baseUrl) {
     const remoteUrl = `${baseUrl}/${id}/${id}_${size}.jpg`;
-    const proxyRes = await fetch(remoteUrl);
+    const proxyRes = await fetch(remoteUrl, { next: { revalidate: 3600 } });
     if (!proxyRes.ok) return new NextResponse('Not found', { status: 404 });
 
     const imageBuffer = await proxyRes.arrayBuffer();
     return new NextResponse(imageBuffer, {
       headers: {
         'Content-Type': 'image/jpeg',
-        'Cache-Control': 'public, max-age=31536000',
+        'Cache-Control': 'public, max-age=3600, must-revalidate',
       },
     });
   } else {
