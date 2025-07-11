@@ -83,6 +83,7 @@ label {
     user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .label.larger {
@@ -194,7 +195,7 @@ label {
     margin-bottom: 4rem;
     border-radius: 2rem;
     background: rgba(255, 255, 255, .9);
-    transition: .2s,
+    transition: .2s;
 }
 
 .detail-view-container {
@@ -247,6 +248,12 @@ label {
     border-radius: 1rem;
     display: block;
     height: 35rem;
+}
+
+.filter-expand-toggle {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
 }
 
 @keyframes jumpOpen {
@@ -345,10 +352,14 @@ label {
         scrollbar-width: none;
         justify-content: center;
         gap: .5rem;
+        row-gap: 1rem;
         width: fit-content;
         max-width: 100%;
         padding: .75rem 1rem;
         flex-wrap: wrap;
+        overflow: hidden;
+        transition: max-height .2s ease;
+        position: relative;
     }
 
     .filter-container::-webkit-scrollbar {
@@ -458,7 +469,7 @@ label {
     }
 
     .filter-container {
-        padding: .75rem 1.25rem;
+        padding: .75rem 3.25rem .75rem 1.25rem;
         gap: 1rem;
         margin-bottom: 2rem;
     }
@@ -495,15 +506,7 @@ label {
 }
 
 @media (max-width: 375px) {
-    nav {
-        justify-content: end;
-    }
-
     html {
         font-size: 90%;
-    }
-
-    #monogram {
-        display: none;
     }
 }

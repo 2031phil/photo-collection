@@ -305,7 +305,6 @@ export default function Gallery() {
           onClose={handleOnboardingClose}
         />
       )}
-      <div id='dropdown-portal'></div>
       <AnimatePresence mode="wait">
         <motion.div
           key="gallery"

@@ -3,8 +3,6 @@ import { join } from 'path';
 import { createReadStream, existsSync } from 'fs';
 import { stat } from 'fs/promises';
 
-export const fetchCache = 'force-no-store';
-
 // This function is necessary to retrieve the actual photos
 export async function GET(req) {
   const baseUrl = process.env.NODE_ENV === 'production' ? process.env.PHOTO_BASE_URL : null;

@@ -10,7 +10,6 @@ export default function Dropdown({ onSelect, text, options = [], value }) {
     const [selectedOption, setSelectedOption] = useState(value || null);
     const dropdownRef = useRef(null);
     const [shouldRenderDropdown, setShouldRenderDropdown] = useState(false);
-    // const [isMobile, setIsMobile] = useState(false);
 
     useResponsiveIconScale('.icons', selectedOption);
 
@@ -18,15 +17,6 @@ export default function Dropdown({ onSelect, text, options = [], value }) {
     useEffect(() => {
         setSelectedOption(value || null);
     }, [value]);
-
-    // useEffect(() => {
-    //     const checkIsMobile = () => setIsMobile(window.innerWidth < 850);
-
-    //     checkIsMobile();
-    //     window.addEventListener('resize', checkIsMobile);
-
-    //     return () => window.removeEventListener('resize', checkIsMobile);
-    // }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -65,20 +55,7 @@ export default function Dropdown({ onSelect, text, options = [], value }) {
 
     return (
         <>
-            {/* {shouldRenderDropdown && isMobile && createPortal(
-                <div className='standard-blur' style={{ position: 'fixed', display: 'flex', width: '100vw', height: '100vh', justifyContent: 'center', alignItems: 'center', top: '0', left: '0', zIndex: '100', padding: '0 7rem', borderRadius: '1.25rem', background: 'rgba(255, 255, 255, .5)', transform: 'scale(1.5)', transition: '.3s' }}>
-                    <OptionsList
-                        options={options}
-                        selectedOption={selectedOption}
-                        isOpen={isOpen}
-                        position={'static'}
-                        handleOptionClick={handleOptionClick}
-                    />
-                </div>,
-                document.getElementById('dropdown-portal')
-            )} */}
             <div ref={dropdownRef} className="dropdown-container" style={{ position: 'relative', borderRadius: '1.25rem' }}>
-
                 <div
                     role="button"
                     tabIndex={0}
@@ -126,7 +103,6 @@ export default function Dropdown({ onSelect, text, options = [], value }) {
                         handleOptionClick={handleOptionClick}
                     />
                 )}
-
             </div>
         </>
     );

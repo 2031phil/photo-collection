@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Dropdown from './Dropdown';
 import { motion } from 'framer-motion';
 import Pressable from './Pressable';
@@ -10,6 +10,60 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
 
     const [countryOptions, setCountryOptions] = useState([]);
     const [environmentOptions, setEnvironmentOptions] = useState([]);
+    const [expanded, setExpanded] = useState(false);
+    const containerRef = useRef(null);
+    const [maxHeight, setMaxHeight] = useState('');
+    const [showOverflow, setShowOverflow] = useState(false);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+
+    useEffect(() => {
+        if (!isOverflowing || !containerRef.current) return;
+
+        const container = containerRef.current;
+
+        if (expanded) {
+            // Measure full height and set it
+            setMaxHeight(`${container.scrollHeight}px`);
+
+            // Delay overflow to match transition duration
+            const timeout = setTimeout(() => {
+                setShowOverflow(true);
+            }, 200); // Match CSS transition duration (400ms here)
+
+            return () => clearTimeout(timeout);
+        } else {
+            // Collapse: hide overflow immediately
+            setShowOverflow(false);
+
+            // Estimate single-row height
+            const child = container.children[1];
+            if (child) {
+                const rowHeight = child.getBoundingClientRect().height;
+                setMaxHeight(`${rowHeight + 24}px`);
+            }
+        }
+    }, [expanded, countryOptions, environmentOptions, filters, isOverflowing]);
+
+    function checkOverflow() {
+        if (containerRef.current) {
+            const container = containerRef.current;
+            const children = Array.from(container.children).filter(
+                el => el.classList && el.classList.contains('filter-section')
+            );
+
+            const rowTops = new Set(children.map(child => child.offsetTop));
+            setIsOverflowing(rowTops.size > 1);
+        }
+    }
+
+    useEffect(() => {
+        checkOverflow();
+    }, [countryOptions, environmentOptions, filters]);
+
+    useEffect(() => {
+        window.addEventListener('resize', checkOverflow);
+        return () => window.removeEventListener('resize', checkOverflow);
+    }, []);
 
     function capitalizeWords(str) {
         return str
@@ -44,7 +98,37 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
 
     return (
         <div id='filterWrapper'>
-            <div className="standard-blur standard-border filter-container" style={{ opacity: selectedPhotoId ? '0' : '1' }}>
+            <div
+                className="standard-blur standard-border filter-container"
+                style={{
+                    opacity: selectedPhotoId ? '0' : '1',
+                    maxHeight: isOverflowing ? maxHeight : 'none',
+                    overflow: isOverflowing ? (showOverflow ? 'visible' : 'hidden') : 'visible'
+                }}
+                ref={containerRef}
+            >
+                {isOverflowing && (
+                    <div
+                        className="filter-expand-toggle"
+                        onClick={() => setExpanded(prev => !prev)}
+                        style={{
+                            position: 'absolute',
+                            right: '0',
+                            top: '0',
+                            height: maxHeight,
+                            display: 'flex',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                            padding: '1rem 1.5rem',
+                            transition: '.2s',
+                            transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)'
+                        }}
+                    >
+                        <svg className='icons' xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+                            <path d="M7.00391 7.82031C6.80599 7.82031 6.62891 7.74479 6.47266 7.59375L0.425781 1.40625C0.358073 1.33854 0.30599 1.26302 0.269531 1.17969C0.233073 1.09115 0.214844 0.997396 0.214844 0.898438C0.214844 0.763021 0.246094 0.640625 0.308594 0.53125C0.371094 0.421875 0.454427 0.335938 0.558594 0.273438C0.667969 0.210938 0.790365 0.179688 0.925781 0.179688C1.1237 0.179688 1.29297 0.247396 1.43359 0.382812L7.41797 6.5H6.58203L12.5664 0.382812C12.7122 0.247396 12.8815 0.179688 13.0742 0.179688C13.2096 0.179688 13.3294 0.210938 13.4336 0.273438C13.543 0.335938 13.6289 0.421875 13.6914 0.53125C13.7539 0.640625 13.7852 0.763021 13.7852 0.898438C13.7852 1.09115 13.7148 1.25781 13.5742 1.39844L7.52734 7.59375C7.45964 7.66667 7.37891 7.72396 7.28516 7.76562C7.19661 7.80208 7.10286 7.82031 7.00391 7.82031Z" fill="black" />
+                        </svg>
+                    </div>
+                )}
                 <div className="filter-section">
                     <span className="filter-section-title">Wallpaper</span>
                     <div className='filter-section-label-container'>
@@ -86,28 +170,33 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
                 <motion.div layout="position" transition={{ type: 'spring', stiffness: 500, damping: 30 }} className="filter-section">
                     <span className="filter-section-title">Location</span>
                     <motion.div layout="position" className='filter-section-label-container'>
-                        <Dropdown
-                            text="All Countries"
-                            options={countryOptions}
-                            value={filters.country ? capitalizeWords(filters.country) : null}
-                            onSelect={(value) =>
-                                onFilterChange({
-                                    ...filters,
-                                    country: value ? value.toLowerCase() : null
-                                })
-                            }
-                        />
-                        <Dropdown
-                            text="All Environments"
-                            options={environmentOptions}
-                            value={filters.environment ? capitalizeWords(filters.environment) : null}
-                            onSelect={(value) =>
-                                onFilterChange({
-                                    ...filters,
-                                    environment: value ? value.toLowerCase() : null
-                                })
-                            }
-                        />
+                        <div onClick={() => setExpanded(true)}>
+                            <Dropdown
+                                text="All Countries"
+                                options={countryOptions}
+                                value={filters.country ? capitalizeWords(filters.country) : null}
+                                onSelect={(value) => {
+                                    onFilterChange({
+                                        ...filters,
+                                        country: value ? value.toLowerCase() : null
+                                    });
+                                }}
+                            />
+                        </div>
+                        <div onClick={() => setExpanded(true)}>
+                            <Dropdown
+                                text="All Environments"
+                                options={environmentOptions}
+                                value={filters.environment ? capitalizeWords(filters.environment) : null}
+                                onClick={() => setExpanded(true)}
+                                onSelect={(value) => {
+                                    onFilterChange({
+                                        ...filters,
+                                        environment: value ? value.toLowerCase() : null
+                                    });
+                                }}
+                            />
+                        </div>
                     </motion.div>
                 </motion.div>
                 <div className='filter-divider' />
