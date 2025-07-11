@@ -116,6 +116,7 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
                             right: '0',
                             top: '0',
                             height: maxHeight,
+                            maxHeight: '100%',
                             display: 'flex',
                             alignItems: 'center',
                             cursor: 'pointer',

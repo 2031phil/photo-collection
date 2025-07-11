@@ -1,9 +1,9 @@
 {
-  "filename": "0122_large.jpg",
+  "filename": "0140_large.jpg",
   "orientation": "landscape",
   "country": "scotland",
-  "environment": "urban",
-  "time_of_day": "twilight",
+  "environment": "rural",
+  "time_of_day": "day",
   "ai_info": {
     "ai_denoise": false,
     "ai_cleanup": false

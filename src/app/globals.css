@@ -251,9 +251,9 @@ label {
 }
 
 .filter-expand-toggle {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
 }
 
 @keyframes jumpOpen {
@@ -469,7 +469,7 @@ label {
     }
 
     .filter-container {
-        padding: .75rem 3.25rem .75rem 1.25rem;
+        padding: .75rem 3.25rem;
         gap: 1rem;
         margin-bottom: 2rem;
     }
