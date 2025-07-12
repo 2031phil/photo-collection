@@ -1,6 +1,6 @@
 export default function OptionsList({ options, selectedOption, isOpen, position, handleOptionClick }) {
     return (
-        <ul className="standard-blur standard-border" style={{
+        <ul className="options-container standard-blur standard-border" style={{
             position: position,
             top: 0,
             right: 0,
@@ -11,9 +11,10 @@ export default function OptionsList({ options, selectedOption, isOpen, position,
             zIndex: 10,
             borderRadius: 'inherit',
             minWidth: '100%',
-            overflow: 'hidden',
+            overflow: 'scroll',
             animation: isOpen === true ? 'jumpOpen .3s' : 'jumpClose .3s',
-            transformOrigin: 'top'
+            transformOrigin: 'top',
+            maxHeight: '40vh'
         }}>
             {options.map((option, index) => (
                 <div key={index}>

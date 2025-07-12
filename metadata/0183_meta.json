@@ -1,0 +1,11 @@
+{
+  "filename": "0183_large.jpg",
+  "orientation": "landscape",
+  "country": "england",
+  "environment": "interior",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}

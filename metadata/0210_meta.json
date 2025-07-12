@@ -1,0 +1,11 @@
+{
+  "filename": "0210_large.jpg",
+  "orientation": "portrait",
+  "country": "england",
+  "environment": "automotive",
+  "time_of_day": "night",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}

@@ -256,6 +256,15 @@ label {
     user-select: none;
 }
 
+.options-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.options-container::-webkit-scrollbar {
+    display: none;
+}
+
 @keyframes jumpOpen {
     0% {
         transform: scale(0);

@@ -1,0 +1,11 @@
+{
+  "filename": "0232_large.jpg",
+  "orientation": "landscape",
+  "country": "germany",
+  "environment": "airport",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}
