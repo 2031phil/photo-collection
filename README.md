@@ -1,1 +1,1 @@
-This is my first project using nextjs/react. View the finished project at website.com. 
+This is my first project using nextjs/react. View the finished project at https://philips-photo-collection.vercel.app 
