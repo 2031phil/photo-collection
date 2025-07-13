@@ -1,4 +1,4 @@
-import { getPhotos } from '../utils/getPhotos'
+import { getPhotosServer } from '../utils/getPhotosServer'
 
 export default async function sitemap() {
     const baseUrl = 'https://philips-photo-collection.vercel.app'
@@ -20,7 +20,7 @@ export default async function sitemap() {
     ]
 
     // Get your photos
-    const photos = await getPhotos()
+    const photos = await getPhotosServer()
 
     // Create sitemap entries for each photo's detail view
     const photoPages = photos.map((photoId) => ({
