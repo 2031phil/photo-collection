@@ -12,6 +12,9 @@ export const metadata = {
     icon: "/favicon.ico",
     apple: "https://philips-photo-collection.vercel.app/home-screen-icon.png",
   },
+  verification: {
+    google: "BsABAcYkn_h57ICI1bHWohbn0DGasRUV-fPZdFLDi6k"
+  },
 };
 
 export default function RootLayout({ children }) {
