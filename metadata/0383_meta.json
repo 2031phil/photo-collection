@@ -1,0 +1,11 @@
+{
+  "filename": "0383_large.jpg",
+  "orientation": "portrait",
+  "country": "germany",
+  "environment": "rural",
+  "time_of_day": "twilight",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}

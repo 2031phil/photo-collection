@@ -1,0 +1,11 @@
+{
+  "filename": "0391_large.jpg",
+  "orientation": "portrait",
+  "country": "germany",
+  "environment": "urban",
+  "time_of_day": "twilight",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}
