@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://philips-photo-collection.vercel.app/sitemap.xml
+
+Crawl-delay: 1
