@@ -123,7 +123,7 @@ export default function UsagePolicy() {
                                 </div>
                             </div>
                         </div>
-                        <p style={{ fontWeight: '400', color: '#494A4C' }}>To discuss a custom commercial license, please write an email to philip.horlemann@web.de specifying the requested image(s) and the use-case.</p>
+                        <p style={{ fontWeight: '400', color: '#494A4C' }}>To discuss a custom commercial license, please write an email to philip.horlemann@web.de specifying the requested photo(s) and the intended use-case.</p>
                     </motion.div>
                 </div>
             </motion.div>

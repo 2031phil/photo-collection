@@ -32,7 +32,7 @@ export default function Gallery() {
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true);
   const observerRef = useRef(); // Reference for the intersection observer
   const searchParams = useSearchParams();
-  const selectedPhotoId = searchParams.get('image');
+  const selectedPhotoId = searchParams.get('photo');
   const { navHeight } = useNavHeight();
 
   useResponsiveIconScale('.icons');
@@ -347,7 +347,7 @@ export default function Gallery() {
                         if (container) container.classList.add('elevated');
 
                         const url = new URL(window.location);
-                        url.searchParams.set('image', id);
+                        url.searchParams.set('photo', id);
                         window.history.pushState({}, '', url);
                         window.dispatchEvent(new PopStateEvent('popstate'));
                       }}

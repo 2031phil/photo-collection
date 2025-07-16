@@ -1,4 +1,5 @@
 'use client';
+
 import { useRef, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -8,6 +9,17 @@ import tagMappings from '@/utils/tagMappings';
 import '@/app/globals.css';
 import Pressable from '@/app/components/Pressable';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
+
+// Capitalization helper
+const capitalize = (text) =>
+  typeof text === 'string'
+    ? text
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+    : text;
+
+const formatAltSentence = (label, value) => value ? `${label}: ${capitalize(value)}` : null;
 
 export default function ImageDetailView({ id }) {
   const [imgSrc, setImgSrc] = useState(`/api/photos/${id}/small`);
@@ -75,6 +87,13 @@ export default function ImageDetailView({ id }) {
     document.body.removeChild(link);
   };
 
+  const altDescription = [
+    `Photo ${activePhotoId}`,
+    tags.country && `Taken in ${capitalize(tags.country)}`,
+    formatAltSentence('Environment', tags.environment),
+    formatAltSentence('Time of day', tags.time_of_day)
+  ].filter(Boolean).join('. ');
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -111,17 +130,13 @@ export default function ImageDetailView({ id }) {
           </div>
           <motion.img
             src={imgSrc}
-            alt={`Image ${activePhotoId}`}
+            alt={altDescription}
             className='detail-image'
             ref={imageRef}
           />
           <div className='tag-container' style={{ width: imageWidth }}>
             {Object.entries(tags).map(([key, value]) => {
               if (key === 'country') {
-                const capitalized = value
-                  .split(' ')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ');
                 return (
                   <AnimatePresence key={`${key}-${value}`}>
                     <motion.div
@@ -137,7 +152,7 @@ export default function ImageDetailView({ id }) {
                             <path d="M6.50005 8.38512C7.51971 8.38512 8.3463 7.55853 8.3463 6.53887C8.3463 5.51922 7.51971 4.69263 6.50005 4.69263C5.4804 4.69263 4.65381 5.51922 4.65381 6.53887C4.65381 7.55853 5.4804 8.38512 6.50005 8.38512Z" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         }
-                        text={capitalized}
+                        text={capitalize(value)}
                       />
                     </motion.div>
                   </AnimatePresence>
@@ -175,7 +190,7 @@ export default function ImageDetailView({ id }) {
             transition={{ duration: 0.4, delay: 0.4, ease: 'easeOut' }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              <h1 style={{ width: '100%', textAlign: 'center', fontSize: '2.25rem', fontWeight: '700' }}>Image #{activePhotoId}</h1>
+              <h1 style={{ width: '100%', textAlign: 'center', fontSize: '2.25rem', fontWeight: '700' }}>Photo #{activePhotoId}</h1>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontWeight: '400' }}>License</span>
@@ -207,7 +222,7 @@ export default function ImageDetailView({ id }) {
                       transition={{ duration: 0.1 }}
                     >
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
-                        <span style={{ fontWeight: '600', lineHeight: '130%' }}>This image is available for commercial use under a custom license.</span>
+                        <span style={{ fontWeight: '600', lineHeight: '130%' }}>This photo is available for commercial use under a custom license.</span>
                         <p style={{ color: '#494A4C', fontWeight: '400', fontSize: '.75rem' }}>To obtain rights for use in advertising, publications, products, or other commercial media, you must purchase a commercial license.</p>
                       </div>
                       <div>
@@ -245,7 +260,7 @@ export default function ImageDetailView({ id }) {
                       checked={userAgree}
                       onChange={(e) => setUserAgree(e.target.checked)}
                     />
-                    I agree to download this image for personal use only.
+                    I agree to download this photo for personal use only.
                   </label>
                   <motion.button
                     onClick={userAgree ? handleDownload : undefined}
