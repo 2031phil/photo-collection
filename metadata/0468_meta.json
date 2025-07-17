@@ -1,0 +1,11 @@
+{
+  "filename": "0468_large.jpg",
+  "orientation": "landscape",
+  "country": "chile",
+  "environment": "urban",
+  "time_of_day": "twilight",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}

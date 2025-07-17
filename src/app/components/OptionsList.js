@@ -12,6 +12,7 @@ export default function OptionsList({ options, selectedOption, isOpen, position,
             borderRadius: 'inherit',
             minWidth: '100%',
             overflow: 'scroll',
+            overscrollBehavior: 'contain',
             animation: isOpen === true ? 'jumpOpen .3s' : 'jumpClose .3s',
             transformOrigin: 'top',
             maxHeight: '40vh'
