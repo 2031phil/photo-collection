@@ -9,7 +9,7 @@ export const metadata = {
   title: "Philip's Photo Collection",
   description: "Free Downloads of High Quality Photos. Feel free to use them as your wallpaper, in your presentations or anywhere else, as long as it’s not for a commercial purpose. For more information go to “Usage Policy”.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "https://philips-photo-collection.vercel.app/favicon.ico",
     apple: "https://philips-photo-collection.vercel.app/home-screen-icon.png",
   },
   verification: {

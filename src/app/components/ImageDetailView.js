@@ -23,6 +23,7 @@ const formatAltSentence = (label, value) => value ? `${label}: ${capitalize(valu
 
 export default function ImageDetailView({ id }) {
   const [imgSrc, setImgSrc] = useState(`/api/photos/${id}/small`);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [userAgree, setUserAgree] = useState(false);
   const [tags, setTags] = useState([]);
   const [imageWidth, setImageWidth] = useState(null);
@@ -31,7 +32,7 @@ export default function ImageDetailView({ id }) {
   const imageRef = useRef();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const queryPhotoId = searchParams.get('image');
+  const queryPhotoId = searchParams.get('photo');
   const activePhotoId = queryPhotoId || id;
   useEffect(() => {
     router.prefetch('/gallery');
@@ -46,7 +47,30 @@ export default function ImageDetailView({ id }) {
   }, []);
 
   useEffect(() => {
+    // Reset loading state when activePhotoId changes
+    setIsImageLoaded(false);
+    const smallImageSrc = `/api/photos/${activePhotoId}/small`;
+    setImgSrc(smallImageSrc);
+
+    // Check if image is already cached/loaded
+    const img = new Image();
+    img.onload = () => {
+      setIsImageLoaded(true);
+    }
+
+    // Potential to show error message for not existing photo ids
+    // img.onerror = () => {
+
+    // };
+    img.src = smallImageSrc;
+
+    // If image is already complete (cached), set loaded immediately
+    if (img.complete && img.naturalHeight !== 0) {
+      setIsImageLoaded(true);
+    }
+
     const mediumImg = new Image();
+    mediumImg.fetchPriority = 'high';
     mediumImg.src = `/api/photos/${activePhotoId}/medium`;
     mediumImg.onload = () => {
       setTimeout(() => {
@@ -101,7 +125,7 @@ export default function ImageDetailView({ id }) {
       transition={{ duration: 0.4 }}
       className='detail-view-container'
     >
-      <div className='image-and-license-container'>
+      <div className='image-and-license-container' style={{ opacity: isImageLoaded ? '1' : '0' }}>
         <motion.div
           key={activePhotoId}
           layout
@@ -133,6 +157,7 @@ export default function ImageDetailView({ id }) {
             alt={altDescription}
             className='detail-image'
             ref={imageRef}
+            fetchPriority="high"
           />
           <div className='tag-container' style={{ width: imageWidth }}>
             {Object.entries(tags).map(([key, value]) => {
