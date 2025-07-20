@@ -264,11 +264,9 @@ export default function Gallery() {
           className="gallery-page-container"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
         >
           <GalleryTitle />
-          <Filter filters={allFilters} onFilterChange={setAllFilters} />
         </motion.div>
       </AnimatePresence>
     );
@@ -310,7 +308,7 @@ export default function Gallery() {
           key="gallery"
           className="gallery-page-container"
           style={{ marginTop: !selectedPhotoId ? 0 : navHeight }}
-          initial={{ opacity: shouldAnimate ? 0 : 1 }}
+          // initial={{ opacity: shouldAnimate ? 0 : 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
