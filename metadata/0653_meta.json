@@ -1,0 +1,11 @@
+{
+  "filename": "0653_large.jpg",
+  "orientation": "portrait",
+  "country": "hungary",
+  "environment": "urban",
+  "time_of_day": "night",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}
