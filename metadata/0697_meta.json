@@ -1,0 +1,11 @@
+{
+  "filename": "0697_large.jpg",
+  "orientation": "landscape",
+  "country": "argentina",
+  "environment": "urban",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}

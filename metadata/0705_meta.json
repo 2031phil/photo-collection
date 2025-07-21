@@ -1,0 +1,11 @@
+{
+  "filename": "0705_large.jpg",
+  "orientation": "landscape",
+  "country": "argentina",
+  "environment": "rural",
+  "time_of_day": "twilight",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}
