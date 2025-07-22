@@ -13,7 +13,7 @@ export default function GalleryImage({ id }) {
                 scale: 1.04,
                 transition: { duration: 0.2 }
             }}
-            whileTap={{ scale: 0.96 }}
+            whileTap={{ scale: 0.95 }}
             transition={{
                 initial: { duration: 0.4, type: 'spring' }
             }}

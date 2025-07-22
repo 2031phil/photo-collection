@@ -12,6 +12,7 @@ import ImageDetailView from './components/ImageDetailView';
 import { useNavHeight } from './contexts/NavHeightContext';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 import Onboarding from './components/Onboarding';
+import Pressable from './components/Pressable';
 
 export const dynamic = 'force-static';
 
@@ -35,7 +36,7 @@ export default function Gallery() {
   const selectedPhotoId = searchParams.get('photo');
   const { navHeight } = useNavHeight();
 
-  useResponsiveIconScale('.icons');
+  useResponsiveIconScale('.icons', hasMore);
 
   // Change batch size based on vw
   useEffect(() => {
@@ -50,12 +51,12 @@ export default function Gallery() {
       }
     };
 
-    updatePhotosPerPage(); // Run on mount
+    updatePhotosPerPage();
     window.addEventListener('resize', updatePhotosPerPage);
     return () => window.removeEventListener('resize', updatePhotosPerPage);
   }, []);
 
-  // Fetch all photos on mount
+  // Fetch a shuffled list of all photos on mount
   useEffect(() => {
     async function fetchPhotos() {
       const res = await fetch('/api/photos');
@@ -361,7 +362,18 @@ export default function Gallery() {
             </AnimatePresence>
           </motion.div>
           {hasMore && (
-            <div ref={observerRef} style={{ height: '1px', transform: 'translateY(-5rem)' }} />
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '4rem' }}>
+              <div ref={observerRef} style={{ height: '1px', transform: 'translateY(-9rem)' }} />
+              <Pressable
+                text="Load more"
+                icon={
+                  <svg className='icons' xmlns="http://www.w3.org/2000/svg" width="14" height="17" viewBox="0 0 14 17" fill="none">
+                    <path d="M6.99414 0.238281C7.2171 0.238281 7.40003 0.308865 7.54295 0.450033C7.68587 0.585555 7.75733 0.763427 7.75733 0.983649V12.1388L7.67158 14.6628L7.18279 14.4934L10.2613 11.1647L12.2164 9.2674C12.285 9.19964 12.3651 9.14882 12.4565 9.11494C12.5537 9.08106 12.6538 9.06411 12.7567 9.06411C12.9682 9.06411 13.1426 9.1347 13.2798 9.27587C13.4227 9.41704 13.4941 9.59208 13.4941 9.80101C13.4941 10.0043 13.417 10.1878 13.2626 10.3516L7.56868 15.9842C7.48864 16.0689 7.40003 16.131 7.30285 16.1705C7.20566 16.2157 7.10276 16.2383 6.99414 16.2383C6.89124 16.2383 6.79119 16.2157 6.69401 16.1705C6.59682 16.131 6.50535 16.0689 6.4196 15.9842L0.734246 10.3516C0.574176 10.1878 0.494141 10.0043 0.494141 9.80101C0.494141 9.59208 0.562742 9.41704 0.699945 9.27587C0.842865 9.1347 1.02009 9.06411 1.23161 9.06411C1.33451 9.06411 1.4317 9.08106 1.52316 9.11494C1.62035 9.14882 1.70324 9.19964 1.77185 9.2674L3.72699 11.1647L6.79691 14.4934L6.3167 14.6628L6.23095 12.1388V0.983649C6.23095 0.763427 6.30241 0.585555 6.44533 0.450033C6.58825 0.308865 6.77119 0.238281 6.99414 0.238281Z" fill="black" />
+                  </svg>
+                }
+                iconPosition="right"
+                onClick={() => loadNextBatch(filteredPhotos, visiblePhotos)} />
+            </div>
           )}
           <div style={{ height: '3rem' }}></div>
           {selectedPhotoId && (

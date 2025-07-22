@@ -74,6 +74,7 @@ label {
 
 .label {
     display: flex;
+    width: fit-content;
     padding: .5rem .75rem;
     align-items: center;
     gap: .25rem;
