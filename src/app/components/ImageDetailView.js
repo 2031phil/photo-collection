@@ -112,7 +112,7 @@ export default function ImageDetailView({ id }) {
   };
 
   const altDescription = [
-    `Photo ${activePhotoId}`,
+    `Photo #${activePhotoId}`,
     tags.country && `Taken in ${capitalize(tags.country)}`,
     formatAltSentence('Environment', tags.environment),
     formatAltSentence('Time of day', tags.time_of_day)
