@@ -58,10 +58,6 @@ export default function ImageDetailView({ id }) {
       setIsImageLoaded(true);
     }
 
-    // Potential to show error message for not existing photo ids
-    // img.onerror = () => {
-
-    // };
     img.src = smallImageSrc;
 
     // If image is already complete (cached), set loaded immediately

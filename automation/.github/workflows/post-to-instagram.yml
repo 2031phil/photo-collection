@@ -1,0 +1,26 @@
+name: Post Photo to Instagram
+
+on:
+  schedule:
+    - cron: '0 9 * * *' # every day at 9:00 UTC
+  workflow_dispatch: # allow manual run
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Post image
+        env:
+          IG_USERNAME: ${{ secrets.IG_USERNAME }}
+          IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
+        run: node postImage.js
