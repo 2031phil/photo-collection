@@ -2,7 +2,7 @@ name: Post Photo to Instagram
 
 on:
   schedule:
-    - cron: '0 9 * * *' # every day at 9:00 UTC
+    - cron: '0 10 * * *' # every day at 10:00 UTC
   workflow_dispatch: # allow manual run
 
 jobs:
@@ -23,4 +23,4 @@ jobs:
         env:
           IG_USERNAME: ${{ secrets.IG_USERNAME }}
           IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
-        run: node postImage.js
+        run: node automation/postImage.js
