@@ -19,10 +19,13 @@ async function login() {
 
 async function post() {
   const ig = await login();
-  const { imagePath, caption, id } = await getRandomImage();
+  const { cloudinaryUrl, caption, id } = await getRandomImage();
+
+  // Download image from Cloudinary
+  const imageBuffer = await fetch(cloudinaryUrl).then(res => res.arrayBuffer());
 
   const published = await ig.publish.photo({
-    file: fs.readFileSync(imagePath),
+    file: Buffer.from(imageBuffer),
     caption,
   });
 
