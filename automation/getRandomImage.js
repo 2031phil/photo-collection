@@ -71,15 +71,19 @@ function generateCaption(imageId, meta) {
 }
 
 export async function getRandomImage() {
-    const basePath = './photos';
+    const metadataPath = './metadata';
     const used = JSON.parse(fs.readFileSync(usedImagesPath, 'utf-8'));
 
-    const folders = fs.readdirSync(basePath).filter(dir => !used.includes(dir));
-    if (folders.length === 0) throw new Error('No new images left.');
+    const files = fs.readdirSync(metadataPath).filter(file => file.endsWith('_meta.json'));
+    const availableIds = files
+        .map(file => file.replace('_meta.json', ''))
+        .filter(id => !used.includes(id));
 
-    const id = folders[Math.floor(Math.random() * folders.length)];
+    if (availableIds.length === 0) throw new Error('No new images left.');
+
+    const id = availableIds[Math.floor(Math.random() * availableIds.length)];
     const imagePath = `${process.env.PHOTO_BASE_URL}/${id}/${id}_medium.jpg`;
-    const meta = JSON.parse(fs.readFileSync(path.join('./metadata', `${id}_meta.json`), 'utf-8'));
+    const meta = JSON.parse(fs.readFileSync(path.join(metadataPath, `${id}_meta.json`), 'utf-8'));
 
     const caption = generateCaption(id, meta);
     return { id, imagePath, caption };
