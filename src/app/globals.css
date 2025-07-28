@@ -24,17 +24,20 @@ nav {
     align-items: center;
     justify-content: space-between;
     z-index: 1100;
+    pointer-events: none;
 }
 
 nav div {
     display: flex;
     gap: 1rem;
+    pointer-events: all;
 }
 
 #monogram {
     width: 4rem;
     height: 4rem;
     overflow: visible;
+    pointer-events: all;
 }
 
 .nav-item {
