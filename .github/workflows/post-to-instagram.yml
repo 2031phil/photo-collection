@@ -25,3 +25,18 @@ jobs:
           IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
           PHOTO_BASE_URL: ${{ secrets.PHOTO_BASE_URL }}
         run: node automation/postImage.js
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit usedImages.json
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add automation/usedImages.json
+          git commit -m "Update used images list [skip ci]" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
