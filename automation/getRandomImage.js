@@ -86,5 +86,5 @@ export async function getRandomImage() {
     const meta = JSON.parse(fs.readFileSync(path.join(metadataPath, `${id}_meta.json`), 'utf-8'));
 
     const caption = generateCaption(id, meta);
-    return { id, imagePath, caption };
+    return { id, cloudinaryUrl: imagePath, caption };
 }
