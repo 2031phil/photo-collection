@@ -11,6 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check for session file
+        run: ls -l automation/igSession.json || echo "Session file not found"
+
+      - name: Restore Instagram session cache
+        uses: actions/cache@v3
+        with:
+          path: automation/igSession.json
+          key: ig-session
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -25,6 +34,12 @@ jobs:
           IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
           PHOTO_BASE_URL: ${{ secrets.PHOTO_BASE_URL }}
         run: node automation/postImage.js
+
+      - name: Save Instagram session cache
+        uses: actions/cache/save@v3
+        with:
+          path: automation/igSession.json
+          key: ig-session
 
       - name: Configure Git
         run: |

@@ -7,3 +7,4 @@ node_modules
 /photos/
 uploadImages.js
 deleteImages.js
+automation/igSession.json
