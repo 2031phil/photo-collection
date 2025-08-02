@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 export default function GallerySkeleton() {
     return (
         <motion.div
-            className='standard-blur'
             style={{
                 width: '100%',
                 aspectRatio: '1/1',

@@ -256,6 +256,31 @@ export default function Gallery() {
     setHasSeenOnboarding(true);
   };
 
+  // Reload unloaded images
+  const retryUnloadedImages = () => {
+    const unloaded = visiblePhotos.filter(id => !loadedImages.has(id));
+
+    if (unloaded.length === 0) return;
+
+    let loadedCount = 0;
+    setLoading(true);
+
+    unloaded.forEach(id => {
+      const img = new Image();
+      img.onload = () => {
+        setLoadedImages(prev => new Set([...prev, id]));
+        loadedCount++;
+        if (loadedCount === unloaded.length) setLoading(false);
+      };
+      img.onerror = () => {
+        console.warn(`Retry failed for image ${id}`);
+        loadedCount++;
+        if (loadedCount === unloaded.length) setLoading(false);
+      };
+      img.src = `/api/photos/${id}/small`;
+    });
+  };
+
   if (filteredPhotos.length === 0 && !noneMatching) {
     return (
       <AnimatePresence mode="wait">
@@ -354,7 +379,12 @@ export default function Gallery() {
                       <GalleryImage id={id} />
                     </button>
                   ) : (
-                    <GallerySkeleton />
+                    <button
+                      onClick={retryUnloadedImages}
+                      style={{ all: 'unset', cursor: 'pointer', width: '100%', aspectRatio: '1/1' }}
+                    >
+                      <GallerySkeleton />
+                    </button>
                   )}
                 </motion.div>
               ))}
