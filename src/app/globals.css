@@ -76,6 +76,13 @@ label {
 }
 
 .retry-button {
+    all: unset;
+    cursor: pointer;
+    width: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;

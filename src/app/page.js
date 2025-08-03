@@ -407,7 +407,6 @@ export default function Gallery() {
                       {failedImages.has(id) ? (
                         <button
                           onClick={retryUnloadedImages}
-                          style={{ all: 'unset', cursor: 'pointer', width: '100%', aspectRatio: '1/1', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                           className='retry-button'
                         >
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.25rem', color: 'white', opacity: '.8', zIndex: '2' }}>
