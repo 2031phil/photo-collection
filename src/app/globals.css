@@ -159,16 +159,18 @@ label {
     z-index: -1;
     pointer-events: none;
     background: radial-gradient(50% 50% at 50% 50%, #CFE2F9 0%, #F2F5F9 100%);
+    opacity: .8;
 }
 
 .background-wrapper::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url('/noise.svg');
+    background-image: url('/background.svg');
     background-repeat: repeat;
-    background-size: auto;
-    opacity: .3;
+    background-size: 160%;
+    background-position: center;
+    opacity: .4;
 }
 
 .filter-divider {
@@ -346,6 +348,10 @@ label {
     .license-container {
         max-width: 28rem;
     }
+
+    .background-wrapper::after {
+        background-size: 120%;
+    }
 }
 
 @media (min-width: 2000px) {
@@ -396,6 +402,10 @@ label {
     .license-container {
         width: 100%;
         max-width: 25rem;
+    }
+
+    .background-wrapper::after {
+        background-size: 220%;
     }
 }
 
@@ -452,6 +462,10 @@ label {
 
     .image-container {
         width: fit-content;
+    }
+
+    .background-wrapper::after {
+        background-size: 280%;
     }
 }
 
@@ -516,6 +530,10 @@ label {
 
     .detail-view-container {
         padding: 9rem 1rem 0 1rem;
+    }
+
+    .background-wrapper::after {
+        background-size: 400%;
     }
 }
 

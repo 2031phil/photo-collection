@@ -21,6 +21,7 @@ export default function Gallery() {
   const [filteredPhotos, setFilteredPhotos] = useState([]); // Array storing filtered ids (if any filters are set)
   const [visiblePhotos, setVisiblePhotos] = useState([]); // Keeping track of visible photos on the grid
   const [loadedImages, setLoadedImages] = useState(new Set()); // Keeping track of which images have loaded during a batch load
+  const [failedImages, setFailedImages] = useState(new Set());
   const [loading, setLoading] = useState(false); // Boolean that's true while images are loading
   const [hasMore, setHasMore] = useState(true); // Boolean that's true if there are more images to load
   const [allFilters, setAllFilters] = useState({}); // Object of all filter settings
@@ -35,7 +36,7 @@ export default function Gallery() {
   const selectedPhotoId = searchParams.get('photo');
   const { navHeight } = useNavHeight();
 
-  useResponsiveIconScale('.icons');
+  useResponsiveIconScale('.icons', failedImages);
 
   // Change batch size based on vw
   useEffect(() => {
@@ -125,7 +126,7 @@ export default function Gallery() {
     setVisiblePhotos(newVisible);
 
     // Preload images
-    let loadedCount = 0;
+    let loadedCount = 0; //Keeping track of preload attempts 
     nextPhotos.forEach(id => {
       if (loadedImages.has(id)) {
         loadedCount++;
@@ -144,6 +145,15 @@ export default function Gallery() {
           }
         };
         img.src = `/api/photos/${id}/small`;
+        img.onerror = () => {
+          console.warn(`Image failed to load: ${id}`);
+          setFailedImages(prev => new Set([...prev, id]));
+          loadedCount++;
+          if (loadedCount === nextPhotos.length) {
+            setLoading(false);
+            setHasMore(newVisible.length < photoList.length);
+          }
+        };
       }
     });
   };
@@ -219,6 +229,10 @@ export default function Gallery() {
           const img = new Image();
           img.onload = () => setLoadedImages(prev => new Set([...prev, id]));
           img.src = `/api/photos/${id}/small`;
+          img.onerror = () => {
+            console.warn(`Image failed to load: ${id}`);
+            setFailedImages(prev => new Set([...prev, id]));
+          };
         }
       });
       return;
@@ -239,6 +253,10 @@ export default function Gallery() {
         const img = new Image();
         img.onload = () => setLoadedImages(prev => new Set([...prev, id]));
         img.src = `/api/photos/${id}/small`;
+        img.onerror = () => {
+          console.warn(`Image failed to load: ${id}`);
+          setFailedImages(prev => new Set([...prev, id]));
+        };
       }
     });
   };
@@ -269,6 +287,11 @@ export default function Gallery() {
       const img = new Image();
       img.onload = () => {
         setLoadedImages(prev => new Set([...prev, id]));
+        setFailedImages(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
         loadedCount++;
         if (loadedCount === unloaded.length) setLoading(false);
       };
@@ -379,12 +402,24 @@ export default function Gallery() {
                       <GalleryImage id={id} />
                     </button>
                   ) : (
-                    <button
-                      onClick={retryUnloadedImages}
-                      style={{ all: 'unset', cursor: 'pointer', width: '100%', aspectRatio: '1/1' }}
-                    >
-                      <GallerySkeleton />
-                    </button>
+                    <>
+                      {failedImages.has(id) ? (
+                        <button
+                          onClick={retryUnloadedImages}
+                          style={{ all: 'unset', cursor: 'pointer', width: '100%', aspectRatio: '1/1', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        >
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.25rem', color: 'white', opacity: '.8', zIndex: '2' }}>
+                            <span style={{ fontSize: '1.5rem', fontWeight: '600' }}>RETRY</span>
+                            <svg className='icons' xmlns="http://www.w3.org/2000/svg" width="18" height="21" viewBox="0 0 18 21" fill="none">
+                              <path d="M17.5 10.5041C17.5 11.5465 17.3218 12.5343 16.9654 13.4675C16.609 14.3953 16.1101 15.2331 15.4686 15.9807C14.8325 16.723 14.0868 17.3397 13.2315 17.8308C12.3761 18.322 11.4468 18.6549 10.4434 18.8296V19.8938C10.4434 20.1012 10.3995 20.254 10.3118 20.3522C10.2241 20.4559 10.1089 20.505 9.96638 20.4996C9.8293 20.4996 9.684 20.4423 9.53048 20.3277L6.87397 18.4366C6.68755 18.3002 6.59434 18.1419 6.59434 17.9618C6.59982 17.7817 6.69303 17.6262 6.87397 17.4952L9.5387 15.596C9.68674 15.4868 9.8293 15.4323 9.96638 15.4323C10.1089 15.4268 10.2241 15.4759 10.3118 15.5796C10.3995 15.6778 10.4434 15.8279 10.4434 16.0299V17.1186C11.211 16.9549 11.9211 16.6738 12.5735 16.2754C13.2315 15.8716 13.8017 15.3777 14.2842 14.7937C14.7667 14.2043 15.1423 13.5467 15.411 12.8208C15.6796 12.0895 15.814 11.3173 15.814 10.5041C15.814 9.55994 15.6303 8.67581 15.2629 7.85172C14.8956 7.02218 14.3966 6.30178 13.7661 5.69054C13.5632 5.47769 13.4673 5.26758 13.4782 5.06019C13.4892 4.8528 13.5577 4.67543 13.6838 4.52808C13.8319 4.36435 14.0293 4.27157 14.276 4.24974C14.5227 4.22791 14.7475 4.32342 14.9504 4.53627C15.7345 5.28941 16.3541 6.18172 16.8091 7.21319C17.2697 8.23921 17.5 9.33618 17.5 10.5041ZM0.5 10.5041C0.5 9.4617 0.675456 8.47661 1.02637 7.54883C1.38276 6.61559 1.88171 5.77786 2.52322 5.03563C3.16473 4.28795 3.91042 3.66852 4.76028 3.17734C5.61563 2.6807 6.54499 2.34779 7.54838 2.17861V1.1062C7.54838 0.89881 7.59224 0.745999 7.67997 0.647763C7.77318 0.54407 7.88832 0.494952 8.0254 0.500409C8.16247 0.500409 8.31051 0.557714 8.46952 0.672322L11.126 2.57155C11.307 2.70799 11.3974 2.86626 11.3974 3.04636C11.3974 3.22645 11.307 3.38199 11.126 3.51298L8.4613 5.4122C8.30777 5.52135 8.16247 5.57866 8.0254 5.58411C7.88832 5.58411 7.77318 5.535 7.67997 5.43676C7.59224 5.33307 7.54838 5.18026 7.54838 4.97833V3.88955C6.78076 4.05327 6.07071 4.33706 5.41824 4.74092C4.76576 5.13932 4.19553 5.63323 3.70755 6.22265C3.22504 6.8066 2.84946 7.46424 2.58079 8.19555C2.31213 8.9214 2.17779 9.69092 2.17779 10.5041C2.17779 11.4482 2.36147 12.3351 2.72883 13.1646C3.10168 13.9887 3.60611 14.7037 4.24214 15.3095C4.43953 15.5278 4.53274 15.7406 4.52177 15.948C4.5108 16.1554 4.44227 16.33 4.31616 16.4719C4.16264 16.6356 3.96251 16.7284 3.71577 16.7503C3.46904 16.7775 3.24698 16.6848 3.04959 16.4719C2.26004 15.7188 1.63772 14.8292 1.18263 13.8032C0.727544 12.7717 0.5 11.672 0.5 10.5041Z" fill="white" />
+                            </svg>
+                          </div>
+                          <GallerySkeleton animate={false} />
+                        </button>
+                      ) : (
+                        <GallerySkeleton animate={true} />
+                      )}
+                    </>
                   )}
                 </motion.div>
               ))}
