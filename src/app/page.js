@@ -284,14 +284,14 @@ export default function Gallery() {
     setLoading(true);
 
     unloaded.forEach(id => {
+      setFailedImages(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
       const img = new Image();
       img.onload = () => {
         setLoadedImages(prev => new Set([...prev, id]));
-        setFailedImages(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
-        });
         loadedCount++;
         if (loadedCount === unloaded.length) setLoading(false);
       };
@@ -299,6 +299,7 @@ export default function Gallery() {
         console.warn(`Retry failed for image ${id}`);
         loadedCount++;
         if (loadedCount === unloaded.length) setLoading(false);
+        setFailedImages(prev => new Set([...prev, id]));
       };
       img.src = `/api/photos/${id}/small`;
     });
@@ -407,6 +408,7 @@ export default function Gallery() {
                         <button
                           onClick={retryUnloadedImages}
                           style={{ all: 'unset', cursor: 'pointer', width: '100%', aspectRatio: '1/1', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                          className='retry-button'
                         >
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.25rem', color: 'white', opacity: '.8', zIndex: '2' }}>
                             <span style={{ fontSize: '1.5rem', fontWeight: '600' }}>RETRY</span>
