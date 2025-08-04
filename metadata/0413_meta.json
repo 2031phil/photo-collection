@@ -1,0 +1,11 @@
+{
+  "filename": "0413_large.jpg",
+  "orientation": "portrait",
+  "country": "argentina",
+  "environment": "sports",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}
