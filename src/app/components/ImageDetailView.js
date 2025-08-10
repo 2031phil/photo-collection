@@ -13,10 +13,12 @@ import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 // Capitalization helper
 const capitalize = (text) =>
   typeof text === 'string'
-    ? text
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
+    ? text.toLowerCase() === 'usa'
+      ? 'USA'
+      : text
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
     : text;
 
 const formatAltSentence = (label, value) => value ? `${label}: ${capitalize(value)}` : null;

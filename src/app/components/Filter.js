@@ -65,12 +65,17 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
         return () => window.removeEventListener('resize', checkOverflow);
     }, []);
 
-    function capitalizeWords(str) {
-        return str
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-    }
+function capitalizeWords(str) {
+    return str
+        .split(' ')
+        .map(word => {
+            if (word.toLowerCase() === 'usa') {
+                return 'USA';
+            }
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(' ');
+}
 
     useEffect(() => {
         async function fetchCountries() {
