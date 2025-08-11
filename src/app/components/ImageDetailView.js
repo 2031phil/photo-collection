@@ -165,7 +165,7 @@ export default function ImageDetailView({ id }) {
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
+                      transition={{ duration: 0.5 }}
                     >
                       <Label
                         key={`${key}-${value}`}
