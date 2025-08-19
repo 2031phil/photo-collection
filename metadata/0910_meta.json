@@ -2,7 +2,7 @@
   "filename": "0910_large.jpg",
   "orientation": "portrait",
   "country": "france",
-  "environment": "urban",
+  "environment": "rail",
   "time_of_day": "day",
   "ai_info": {
     "ai_denoise": true,

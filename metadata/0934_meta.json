@@ -1,0 +1,11 @@
+{
+  "filename": "0934_large.jpg",
+  "orientation": "landscape",
+  "country": "argentina",
+  "environment": "rail",
+  "time_of_day": "twilight",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}

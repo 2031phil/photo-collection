@@ -1,6 +1,5 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import OptionsList from './OptionsList';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 

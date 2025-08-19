@@ -1,9 +1,9 @@
 {
-  "filename": "0202_large.jpg",
+  "filename": "0945_large.jpg",
   "orientation": "landscape",
-  "country": "england",
+  "country": "usa",
   "environment": "urban",
-  "time_of_day": "day",
+  "time_of_day": "twilight",
   "ai_info": {
     "ai_denoise": false,
     "ai_cleanup": false

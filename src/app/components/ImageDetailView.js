@@ -184,7 +184,9 @@ export default function ImageDetailView({ id }) {
 
               if (['ai_denoise', 'ai_cleanup'].includes(key) && !value) return null;
 
-              const lookupValue = ['ai_denoise', 'ai_cleanup'].includes(key) ? String(value) : value;
+              const lookupValue = ['ai_denoise', 'ai_cleanup'].includes(key)
+                ? String(value)
+                : value.toLowerCase().replace(/ /g, '_');
               const config = tagMappings[key]?.[lookupValue];
 
               if (!config) return null;

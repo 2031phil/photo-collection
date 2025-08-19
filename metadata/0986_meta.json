@@ -1,11 +1,11 @@
 {
-  "filename": "0479_large.jpg",
+  "filename": "0986_large.jpg",
   "orientation": "landscape",
   "country": "argentina",
-  "environment": "automotive",
+  "environment": "nature",
   "time_of_day": "day",
   "ai_info": {
-    "ai_denoise": false,
+    "ai_denoise": true,
     "ai_cleanup": false
   }
 }
