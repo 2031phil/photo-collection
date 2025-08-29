@@ -1,0 +1,11 @@
+{
+  "filename": "0489_large.jpg",
+  "orientation": "landscape",
+  "country": "norway",
+  "environment": "rural",
+  "time_of_day": "night",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}

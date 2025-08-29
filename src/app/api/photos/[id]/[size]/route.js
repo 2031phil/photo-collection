@@ -9,22 +9,48 @@ export async function GET(req) {
   const url = new URL(req.url);
   const segments = url.pathname.split('/');
   const id = segments[segments.length - 2];
-  const size = segments[segments.length - 1];
+  let sizeWithExt = segments[segments.length - 1];
+
+  const size = sizeWithExt.includes('.') ? sizeWithExt.split('.').slice(0, -1).join('.') : sizeWithExt;
+
+  let ext = 'jpg';
+  let contentType = 'image/jpeg';
+
+  // If browser supports webp, fetch webp
+  const acceptHeader = req.headers.get('accept') || '';
+  if (size !== 'large' && acceptHeader.includes('image/webp')) {
+    ext = 'webp';
+    contentType = 'image/webp';
+  }
+
+  let fileName;
+  if (baseUrl) {
+    // In production, include /webp/ subfolder if fetching webp
+    if (ext === 'webp') {
+      fileName = `webp/${id}_${size}`;
+    } else {
+      fileName = `${id}_${size}`;
+    }
+  } else {
+    // Local file system: fileName includes extension
+    fileName = `${id}_${size}.${ext}`;
+  }
 
   if (baseUrl) {
-    const remoteUrl = `${baseUrl}/${id}/${id}_${size}.jpg`;
+    const remoteUrl = `${baseUrl}/${id}/${fileName}`;
     const proxyRes = await fetch(remoteUrl, { next: { revalidate: 3600 } });
     if (!proxyRes.ok) return new NextResponse('Not found', { status: 404 });
 
     const imageBuffer = await proxyRes.arrayBuffer();
     return new NextResponse(imageBuffer, {
       headers: {
-        'Content-Type': 'image/jpeg',
+        'Content-Type': contentType,
         'Cache-Control': 'public, max-age=3600, must-revalidate',
       },
     });
   } else {
-    const filePath = join(process.cwd(), 'photos', id, `${id}_${size}.jpg`);
+    let filePath = join(process.cwd(), 'photos', id, fileName);
+
     if (!existsSync(filePath)) {
       return new NextResponse('Not found', { status: 404 });
     }
@@ -34,7 +60,7 @@ export async function GET(req) {
 
     return new NextResponse(stream, {
       headers: {
-        'Content-Type': 'image/jpeg',
+        'Content-Type': contentType,
         'Content-Length': fileStat.size,
         'Cache-Control': 'public, max-age=31536000',
       },

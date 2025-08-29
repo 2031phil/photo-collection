@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabaseClient';
 
-export async function POST(request, { params }) {
-  const id = params.id;
+export async function POST(request, context) {
+  const id = (await context).params.id;
 
   // Step 1: Check if record exists
   const { data: existing, error: selectError } = await supabase

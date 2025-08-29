@@ -93,6 +93,7 @@ export default function ImageDetailView({ id }) {
   }, [activePhotoId]);
 
   const handleDownload = async () => {
+    // Tracking the downloads in the database
     try {
       await fetch(`/api/downloads/${activePhotoId}`, {
         method: 'POST',
@@ -276,9 +277,9 @@ export default function ImageDetailView({ id }) {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <label htmlFor='condition' style={{ display: 'flex', gap: '1rem', alignItems: 'start', fontSize: '.875rem', fontWeight: '400' }}>
+                  <label htmlFor='condition' style={{ display: 'flex', gap: '.8rem', alignItems: 'start', fontSize: '.875rem', fontWeight: '400' }}>
                     <input
-                      style={{ marginTop: '.3rem', transform: 'scale(1.4)', cursor: 'pointer' }}
+                      style={{ marginTop: '.35rem', marginLeft: '.2rem', transform: 'scale(1.4)', cursor: 'pointer' }}
                       type='checkbox'
                       id='condition'
                       name='usageAgreement'

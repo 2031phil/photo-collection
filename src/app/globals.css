@@ -23,8 +23,10 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 1100;
+    z-index: 1001;
     pointer-events: none;
+    /* backdrop-filter: blur(0.5rem);
+    mask: linear-gradient(0deg, transparent, black 40%); */
 }
 
 nav div {
@@ -97,7 +99,7 @@ label {
     align-items: center;
     gap: .25rem;
     border-radius: 1.25rem;
-    background: rgba(255, 255, 255, .5);
+    background: rgba(255, 255, 255, .6);
     transition: .2s;
     user-select: none;
     -webkit-user-select: none;
@@ -229,7 +231,8 @@ label {
     height: 100vh;
     padding: 11rem 4rem 0 4rem;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     gap: 1rem;
     overflow-y: scroll;
 }
@@ -249,7 +252,7 @@ label {
     padding: 1.25rem;
     justify-content: space-between;
     background: rgba(255, 255, 255, .5);
-    border-radius: 1rem;
+    border-radius: 2rem;
     width: 25%;
 }
 
@@ -267,7 +270,7 @@ label {
 }
 
 .detail-image {
-    border-radius: 1rem;
+    border-radius: 2rem;
     display: block;
     height: 35rem;
 }

@@ -1,9 +1,9 @@
 {
-  "filename": "0433_large.jpg",
+  "filename": "0839_large.jpg",
   "orientation": "portrait",
-  "country": "argentina",
+  "country": "usa",
   "environment": "urban",
-  "time_of_day": "twilight",
+  "time_of_day": "day",
   "ai_info": {
     "ai_denoise": false,
     "ai_cleanup": false

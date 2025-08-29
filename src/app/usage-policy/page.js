@@ -15,7 +15,8 @@ export default function UsagePolicy() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1 }}
             >
-                <h1>Licenses</h1>
+                <div style={{ height: '1rem' }} />
+                <h1 style={{ marginTop: '-1rem' }}>Licenses</h1>
                 <div className='policies-container'>
                     <motion.div
                         className="standard-border standard-blur license-card"
