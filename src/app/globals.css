@@ -326,6 +326,20 @@ label {
     }
 }
 
+@media (display-mode: standalone) {
+    nav {
+        margin-top: 3rem;
+    }
+
+    #filterWrapper {
+        top: 4rem;
+    }
+
+    .detail-view-container {
+        top: 3rem;
+    }
+}
+
 @media (min-width: 1600px) {
     #filterWrapper {
         display: flex;
