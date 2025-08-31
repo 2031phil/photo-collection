@@ -106,6 +106,12 @@ h2 {
     margin: -2rem 0 1rem 0;
 }
 
+@media (display-mode: standalone) {
+    .title-container {
+        padding-top: 3rem;
+    }
+}
+
 @media (max-width: 1100px) {
     .onboarding-container {
         padding: 2rem;
