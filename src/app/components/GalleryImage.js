@@ -17,7 +17,7 @@ export default function GalleryImage({ id }) {
             transition={{
                 initial: { duration: 0.4, type: 'spring' }
             }}
-            style={{ width: '100%', aspectRatio: '1/1', borderRadius: '.5rem', cursor: 'pointer', objectFit: 'cover' }}
+            style={{ width: '100%', aspectRatio: '1/1', borderRadius: '1rem', cursor: 'pointer', objectFit: 'cover' }}
         />
     );
 }

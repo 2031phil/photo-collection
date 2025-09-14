@@ -492,6 +492,10 @@ label {
         padding: 12rem 3rem 0 3rem;
     }
 
+    .detail-image, .license-container {
+        border-radius: 1.5rem;
+    }
+
     .image-container {
         width: fit-content;
     }

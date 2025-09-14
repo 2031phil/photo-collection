@@ -1,11 +1,11 @@
 {
-  "filename": "0860_large.jpg",
+  "filename": "1021_large.jpg",
   "orientation": "landscape",
-  "country": "argentina",
+  "country": "norway",
   "environment": "nature",
   "time_of_day": "day",
   "ai_info": {
-    "ai_denoise": true,
+    "ai_denoise": false,
     "ai_cleanup": false
   }
 }
