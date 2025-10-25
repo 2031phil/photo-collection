@@ -42,7 +42,7 @@ export default function Pressable({ icon, text, clicked, onClick, iconPosition, 
             text={text}
             onClick={handleClick}
             className={`label border-hover pointer standard-blur standard-border ${clicked ? ' gradient-border-20' : ''} ${larger ? 'larger' : ''}`}
-            style={{ transform: isPressed ? 'scale(0.9)' : 'scale(1)', flexDirection: iconPosition === "right" ? 'row-reverse' : 'row' }}
+            style={{ transform: isPressed ? 'scale(0.9)' : 'scale(1)', flexDirection: iconPosition === "right" ? 'row-reverse' : 'row', aspectRatio: !text ? '1/1' : undefined, borderRadius: !text ? '100%' : undefined }}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}

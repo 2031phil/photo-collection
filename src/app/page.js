@@ -35,6 +35,7 @@ export default function Gallery() {
   const searchParams = useSearchParams();
   const selectedPhotoId = searchParams.get('photo');
   const { navHeight } = useNavHeight();
+  const [shouldDisableLayout, setShouldDisableLayout] = useState(false);
 
   useResponsiveIconScale('.icons', failedImages);
 
@@ -389,6 +390,8 @@ export default function Gallery() {
                   {loadedImages.has(id) ? (
                     <button
                       onClick={(e) => {
+                        setShouldDisableLayout(true); // Disable layout for first render
+
                         const button = e.currentTarget;
                         const container = button.closest('.img-container');
                         if (container) container.classList.add('elevated');
@@ -434,6 +437,7 @@ export default function Gallery() {
             <AnimatePresence mode="wait">
               <ImageDetailView
                 id={selectedPhotoId}
+                disableInitialLayout={shouldDisableLayout}
               />
             </AnimatePresence>
           )}

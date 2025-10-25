@@ -1,0 +1,11 @@
+{
+  "filename": "1037_large.jpg",
+  "orientation": "portrait",
+  "country": "norway",
+  "environment": "airport",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}
