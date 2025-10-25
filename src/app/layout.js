@@ -2,6 +2,7 @@ import './globals.css';
 import { NavHeightProvider } from './contexts/NavHeightContext';
 import Navbar from './components/Navbar';
 import { Suspense } from 'react';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const dynamic = 'force-static';
 
