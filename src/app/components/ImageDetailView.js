@@ -361,6 +361,7 @@ export default function ImageDetailView({ id }) {
                         opacity: userAgree ? '1' : '.5'
                       }}
                       className='gradient-border-32'
+                      id='downloadButton'
                       whileHover={userAgree && {
                         scale: 1.02,
                         transition: { duration: 0.2 }

@@ -278,7 +278,7 @@ label {
 }
 
 .filter-expand-toggle,
-label, #monogramContainer {
+label, #monogramContainer, #downloadButton {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     user-select: none;
