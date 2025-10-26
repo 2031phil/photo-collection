@@ -6,8 +6,10 @@ export default function GalleryImage({ id }) {
         <motion.img
             key={`image-${id}`}
             src={`/api/photos/${id}/small`}
+            loading='lazy'
+            decoding='async'
             alt={`Photo ${id}`}
-            initial={{ scale: 0, opacity: 0, filter: 'blur(20px)' }}
+            initial={{ scale: 0.25, opacity: 0.25, filter: 'blur(20px)' }}
             animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
             whileHover={{
                 scale: 1.04,
