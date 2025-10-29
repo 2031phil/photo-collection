@@ -1,4 +1,10 @@
-export default function OptionsList({ options, selectedOption, isOpen, position, handleOptionClick }) {
+import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
+
+export default function OptionsList({ options, selectedOption, isOpen, position, handleOptionClick, svgs, icons }) {
+    const normalizeKey = (str) => str.toLowerCase().replace(/\s+/g, '_');
+
+        useResponsiveIconScale('.icons');
+
     return (
         <ul className="options-container standard-blur standard-border" style={{
             position: position,
@@ -31,7 +37,30 @@ export default function OptionsList({ options, selectedOption, isOpen, position,
                             alignItems: 'center',
                         }}
                     >
-                        <span className='label-text'>{option}</span>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {(svgs && svgs[normalizeKey(option)]) || (icons && icons[normalizeKey(option)]) ? (
+                                <div style={{ marginRight: '.75rem', display: 'flex', alignItems: 'center' }}>
+                                    {svgs && svgs[normalizeKey(option)] ? (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 100 100"
+                                            width="24"
+                                            height="24"
+                                            style={{ display: 'block', objectFit: 'contain' }}
+                                            preserveAspectRatio="xMidYMid meet"
+                                            className="icons"
+                                        >
+                                            <g transform={svgs[normalizeKey(option)].transform}>
+                                                <path d={svgs[normalizeKey(option)].path} fill="#000" />
+                                            </g>
+                                        </svg>
+                                    ) : (
+                                        icons[normalizeKey(option)]
+                                    )}
+                                </div>
+                            ) : null}
+                            <span className='label-text'>{option}</span>
+                        </div>
                         {selectedOption === option && (
                             <div style={{ width: '1rem', height: '.75rem', marginLeft: '.75rem', display: 'flex', alignItems: 'center' }}>
                                 <svg className='icons' xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">

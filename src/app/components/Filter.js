@@ -3,16 +3,21 @@ import Dropdown from './Dropdown';
 import { motion } from 'framer-motion';
 import Pressable from './Pressable';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
+import { countryShapes } from '@/utils/countryShapesNormalized';
+import { getCountryCode } from '@/utils/countryCodes';
+import tagMappings from '@/utils/tagMappings';
 
 export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
 
     useResponsiveIconScale('.icons');
 
     const [countryOptions, setCountryOptions] = useState([]);
+    const [countrySvgs, setCountrySvgs] = useState({});
     const [environmentOptions, setEnvironmentOptions] = useState([]);
     const [expanded, setExpanded] = useState(false);
     const containerRef = useRef(null);
     const [maxHeight, setMaxHeight] = useState('');
+    const initialMaxHeight = useRef(null);
     const [showOverflow, setShowOverflow] = useState(false);
     const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -43,6 +48,12 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
             }
         }
     }, [expanded, countryOptions, environmentOptions, filters, isOverflowing]);
+
+    useEffect(() => {
+        if (!initialMaxHeight.current && maxHeight) {
+            initialMaxHeight.current = maxHeight;
+        }
+    }, [maxHeight]);
 
     function checkOverflow() {
         if (containerRef.current) {
@@ -83,8 +94,28 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
             const res = await fetch('/api/photo-filters/country');
             if (res.ok) {
                 const data = await res.json();
+                const options = [];
+                const svgs = {};
+                data.forEach(name => {
+                    const cap = capitalizeWords(name);
+                    options.push(cap);
 
-                setCountryOptions(data.map(capitalizeWords));
+                    const code = getCountryCode(cap);
+                    if (code) {
+                        const match = Array.isArray(countryShapes)
+                            ? countryShapes.find(shape => shape.id === code)
+                            : countryShapes[code];
+
+                        if (match) {
+                            svgs[name.toLowerCase()] = {
+                                path: match.path,
+                                transform: match.transform
+                            };
+                        }
+                    }
+                });
+                setCountryOptions(options);
+                setCountrySvgs(svgs);
             }
         }
         fetchCountries();
@@ -101,6 +132,14 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
         }
         fetchEnvironments();
     }, []);
+
+    const environmentIcons = {};
+    environmentOptions.forEach(opt => {
+        const key = opt.toLowerCase().replace(/ /g, '_'); // normalize option key
+        if (tagMappings.environment[key]) {
+            environmentIcons[key] = tagMappings.environment[key].icon;
+        }
+    });
 
     return (
         <div id='filterWrapper'>
@@ -121,12 +160,11 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
                             position: 'absolute',
                             right: '0',
                             top: '0',
-                            height: maxHeight,
-                            maxHeight: '100%',
+                            height: initialMaxHeight.current || maxHeight,
                             display: 'flex',
                             alignItems: 'center',
                             cursor: 'pointer',
-                            padding: '1rem 1.5rem',
+                            padding: '0rem 1.5rem',
                             transition: '.2s',
                             transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)'
                         }}
@@ -181,6 +219,7 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
                             <Dropdown
                                 text="All Countries"
                                 options={countryOptions}
+                                svgs={countrySvgs}
                                 value={filters.country ? capitalizeWords(filters.country) : null}
                                 onSelect={(value) => {
                                     onFilterChange({
@@ -194,6 +233,7 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
                             <Dropdown
                                 text="All Environments"
                                 options={environmentOptions}
+                                icons={environmentIcons}
                                 value={filters.environment ? capitalizeWords(filters.environment) : null}
                                 onClick={() => setExpanded(true)}
                                 onSelect={(value) => {

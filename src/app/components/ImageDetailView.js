@@ -9,6 +9,8 @@ import '@/app/globals.css';
 import Pressable from '@/app/components/Pressable';
 import TopRowContainer from '@/app/components/TopRowContainer';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
+import { countryShapes } from '@/utils/countryShapesNormalized';
+import { getCountryCode } from '@/utils/countryCodes';
 
 // Capitalization helper
 const capitalize = (text) =>
@@ -202,6 +204,9 @@ export default function ImageDetailView({ id }) {
           <div className='tag-container' style={{ width: imageWidth }}>
             {Object.entries(tags).map(([key, value]) => {
               if (key === 'country') {
+                const code = getCountryCode(capitalize(value));
+                const countryShape = countryShapes.find(shape => shape.id === code);
+
                 return (
                   <AnimatePresence key={`${key}-${value}`}>
                     <motion.div
@@ -212,10 +217,29 @@ export default function ImageDetailView({ id }) {
                       <Label
                         key={`${key}-${value}`}
                         icon={
-                          <svg className='icons' xmlns="http://www.w3.org/2000/svg" width="13" height="18" viewBox="0 0 13 18" fill="none">
-                            <path d="M6.49992 1C3.44207 1 0.961182 3.36127 0.961182 6.26949C0.961182 9.61581 4.65367 14.9188 6.00951 16.7504C6.06579 16.8277 6.13955 16.8906 6.22478 16.934C6.31001 16.9774 6.40429 17 6.49992 17C6.59555 17 6.68983 16.9774 6.77506 16.934C6.86028 16.8906 6.93405 16.8277 6.99033 16.7504C8.34616 14.9195 12.0387 9.6185 12.0387 6.26949C12.0387 3.36127 9.55776 1 6.49992 1Z" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M6.50005 8.38512C7.51971 8.38512 8.3463 7.55853 8.3463 6.53887C8.3463 5.51922 7.51971 4.69263 6.50005 4.69263C5.4804 4.69263 4.65381 5.51922 4.65381 6.53887C4.65381 7.55853 5.4804 8.38512 6.50005 8.38512Z" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
+                          countryShape ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 100 100"
+                              width="24"
+                              height="24"
+                              style={{
+                                display: 'block',
+                                objectFit: 'contain',
+                              }}
+                              preserveAspectRatio="xMidYMid meet"
+                              className='icons'
+                            >
+                              <g transform={countryShape.transform}>
+                                <path d={countryShape.path} fill="#000" />
+                              </g>
+                            </svg>
+                          ) : (
+                            <svg className='icons' xmlns="http://www.w3.org/2000/svg" width="13" height="18" viewBox="0 0 13 18" fill="none">
+                              <path d="M6.49992 1C3.44207 1 0.961182 3.36127 0.961182 6.26949C0.961182 9.61581 4.65367 14.9188 6.00951 16.7504C6.06579 16.8277 6.13955 16.8906 6.22478 16.934C6.31001 16.9774 6.40429 17 6.49992 17C6.59555 17 6.68983 16.9774 6.77506 16.934C6.86028 16.8906 6.93405 16.8277 6.99033 16.7504C8.34616 14.9195 12.0387 9.6185 12.0387 6.26949C12.0387 3.36127 9.55776 1 6.49992 1Z" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+                              <path d="M6.50005 8.38512C7.51971 8.38512 8.3463 7.55853 8.3463 6.53887C8.3463 5.51922 7.51971 4.69263 6.50005 4.69263C5.4804 4.69263 4.65381 5.51922 4.65381 6.53887C4.65381 7.55853 5.4804 8.38512 6.50005 8.38512Z" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )
                         }
                         text={capitalize(value)}
                       />

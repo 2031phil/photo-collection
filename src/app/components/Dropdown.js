@@ -3,7 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 import OptionsList from './OptionsList';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 
-export default function Dropdown({ onSelect, text, options = [], value }) {
+const normalizeKey = (str) => str.toLowerCase().replace(/\s+/g, '_');
+
+export default function Dropdown({ onSelect, text, options = [], value, svgs, icons }) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(value || null);
@@ -62,6 +64,27 @@ export default function Dropdown({ onSelect, text, options = [], value }) {
                     onClick={() => setIsOpen((prev) => !prev)}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev); }}
                 >
+                    {selectedOption && (svgs && svgs[normalizeKey(selectedOption)] || icons && icons[normalizeKey(selectedOption)]) && (
+                        <div style={{ marginRight: '.2rem', display: 'flex', alignItems: 'center' }}>
+                            {svgs && svgs[normalizeKey(selectedOption)] ? (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 100 100"
+                                    width="24"
+                                    height="24"
+                                    style={{ display: 'block', objectFit: 'contain' }}
+                                    preserveAspectRatio="xMidYMid meet"
+                                    className='icons'
+                                >
+                                    <g transform={svgs[normalizeKey(selectedOption)].transform}>
+                                        <path d={svgs[normalizeKey(selectedOption)].path} fill="#000" />
+                                    </g>
+                                </svg>
+                            ) : (
+                                icons[normalizeKey(selectedOption)]
+                            )}
+                        </div>
+                    )}
                     <span className="label-text">{selectedOption || text}</span>
 
                     <div className="icon-container">
@@ -100,6 +123,8 @@ export default function Dropdown({ onSelect, text, options = [], value }) {
                         isOpen={isOpen}
                         position={'absolute'}
                         handleOptionClick={handleOptionClick}
+                        svgs={svgs}
+                        icons={icons}
                     />
                 )}
             </div>

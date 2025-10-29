@@ -9,7 +9,7 @@ export async function GET() {
     const files = await fs.readdir(directoryPath);
     const countries = files
       .filter((file) => file.endsWith('.json'))
-      .map((file) => file.replace('.json', ''));
+      .map((file) => file.replace('.json', '').replace(/ /g, '_'));
 
     return NextResponse.json(countries);
   } catch (error) {
