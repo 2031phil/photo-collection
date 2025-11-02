@@ -38,11 +38,7 @@
     color: rgba(57, 108, 135, 1);
 }
 
-h1 {
-    text-align: start;
-}
-
-.gallery-grid {
+#galleryGrid {
     padding-top: 14rem;
 }
 
@@ -100,13 +96,13 @@ h1 {
         font-size: 1.5rem;
     }
 
-    .gallery-grid {
+    #galleryGrid {
         padding-top: 20rem;
     }
 }
 
 @media (max-width: 1350px) {
-    .gallery-grid {
+    #galleryGrid {
         padding-top: 13rem;
     }
 }
@@ -131,7 +127,7 @@ h1 {
         font-size: 1.25rem;
     }
 
-    .gallery-grid {
+    #galleryGrid {
         padding-top: 12rem;
     }
 }
@@ -156,7 +152,7 @@ h1 {
         font-size: 1rem;
     }
 
-    .gallery-grid {
+    #galleryGrid {
         padding-top: 8rem;
     }
 }
@@ -197,7 +193,7 @@ h1 {
         font-size: .75rem;
     }
 
-    .gallery-grid {
+    #galleryGrid {
         padding-top: 11rem;
     }
 }

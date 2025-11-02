@@ -322,6 +322,7 @@ export default function SvalbardGallery() {
             </div>
           </motion.div>
           <motion.div
+            id='galleryGrid'
             className='gallery-grid'
             layout
             style={{ opacity: selectedPhotoId ? '0' : '1' }}

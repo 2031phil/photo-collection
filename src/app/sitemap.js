@@ -12,6 +12,12 @@ export default async function sitemap() {
             priority: 1,
         },
         {
+            url: `${baseUrl}/collections/svalbard`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.5,
+        },
+        {
             url: `${baseUrl}/usage-policy`,
             lastModified: new Date(),
             changeFrequency: 'yearly',
