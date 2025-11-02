@@ -29,6 +29,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital@1&display=swap" rel="stylesheet" />
         <link rel="manifest" href="/manifest.json" />
         <meta
           name="apple-mobile-web-app-status-bar-style"

@@ -21,7 +21,9 @@
 .collection-name {
     padding: 0 2rem 0 1rem;
     font-size: 7rem;
-    font-family: 'Libre-Caslon-Text', serif;
+    font-family: "Libre Caslon Text", serif;
+    font-style: italic;
+    font-weight: 400;
     background: linear-gradient(0deg, rgba(0, 50, 77, 1) 0%, rgba(0, 111, 196, 1) 35%, rgba(176, 229, 255, 1) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

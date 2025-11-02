@@ -230,7 +230,7 @@ export default function SvalbardGallery() {
   const opacity = useTransform(scrollY, scrollMapOpacity, [1, 0]);
   const blurAmount = useTransform(scrollY, scrollMapBlur, [0, 30]); // renamed from 'blur'
   const filter = useMotionTemplate`blur(${blurAmount}px)`;    // use new name
-  const y = useTransform(scrollY, [0, 400], [0, -150]); // parallax
+  const y = useTransform(scrollY, [0, 400], [0, -150]); //parallax
 
   return (
     <>
@@ -248,7 +248,7 @@ export default function SvalbardGallery() {
             }}
         >
           <motion.div
-            style={{ opacity, filter, y, position: 'fixed', width: isMobile ? '100%' : '', left: isMobile ? '0' : '' }}
+            style={{ opacity, filter, ...(isMobile ? {} : { y }), position: 'fixed', width: isMobile ? '100%' : '', left: isMobile ? '0' : '' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -391,6 +391,7 @@ export default function SvalbardGallery() {
             <AnimatePresence mode="wait">
               <ImageDetailView
                 id={selectedPhotoId}
+                originUrl="svalbard"
               />
             </AnimatePresence>
           )}

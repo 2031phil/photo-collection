@@ -25,7 +25,7 @@ const capitalize = (text) =>
 
 const formatAltSentence = (label, value) => value ? `${label}: ${capitalize(value)}` : null;
 
-export default function ImageDetailView({ id }) {
+export default function ImageDetailView({ id, originUrl }) {
   const [imgSrc, setImgSrc] = useState(`/api/photos/${id}/small`);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [userAgree, setUserAgree] = useState(false);
@@ -61,6 +61,10 @@ export default function ImageDetailView({ id }) {
     setTimeout(() => {
       setHasContainerAnimated(true);
     }, 1000);
+  }, []);
+
+  useEffect(() => {
+    console.log(originUrl);
   }, []);
 
   useEffect(() => {
@@ -159,23 +163,11 @@ export default function ImageDetailView({ id }) {
             isMobile={isMobile}
             compactView={compactView}
             onBack={() => {
-              if (typeof document !== 'undefined' && document.referrer) {
-                const ref = document.referrer;
-                const origin = typeof window !== 'undefined' ? window.location.origin : '';
-
-                if (
-                  ref === origin + '/' ||                  // came from the root gallery
-                  ref === origin ||                        // sometimes browsers omit the trailing slash
-                  ref.includes('/collections/') ||         // came from any collection
-                  (origin && ref.includes(origin + '/collections/'))
-                ) {
-                  router.back();
-                  return;
-                }
+              if (originUrl) {
+                router.back();
+              } else {
+                router.push('/', { shallow: true, scroll: false });
               }
-
-              // Default fallback
-              router.push('/', { shallow: true, scroll: false });
             }}
             onToggleCompact={() => setCompactView((prev) => !prev)}
           />
@@ -191,23 +183,11 @@ export default function ImageDetailView({ id }) {
             <TopRowContainer
               isMobile={isMobile}
               onBack={() => {
-                if (typeof document !== 'undefined' && document.referrer) {
-                  const ref = document.referrer;
-                  const origin = typeof window !== 'undefined' ? window.location.origin : '';
-
-                  if (
-                    ref === origin + '/' ||                  // came from the root gallery
-                    ref === origin ||                        // sometimes browsers omit the trailing slash
-                    ref.includes('/collections/') ||         // came from any collection
-                    (origin && ref.includes(origin + '/collections/'))
-                  ) {
-                    router.back();
-                    return;
-                  }
+                if (originUrl) {
+                  router.back();
+                } else {
+                  router.push('/', { shallow: true, scroll: false });
                 }
-
-                // Default fallback
-                router.push('/', { shallow: true, scroll: false });
               }}
               onToggleCompact={() => setCompactView((prev) => !prev)}
             />
