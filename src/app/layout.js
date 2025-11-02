@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
               {children}
               <SpeedInsights />
             </main>
-            <link rel="stylesheet" href="https://use.typekit.net/lbq0rfz.css" />
+            <link rel="stylesheet" href="https://use.typekit.net/bzj0ibm.css" />
           </NavHeightProvider>
         </Suspense>
       </body>
