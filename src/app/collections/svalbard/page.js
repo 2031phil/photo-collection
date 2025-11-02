@@ -316,7 +316,7 @@ export default function SvalbardGallery() {
                       <h1 id='collection' className='collection-title'>Collection</h1>
                     </div>
                   </div>
-                  <span className='date'>NOV 1, 2025</span>
+                  <span className='date'>MARCH 2023</span>
                 </>
               )}
             </div>
