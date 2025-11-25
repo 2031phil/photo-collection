@@ -6,6 +6,7 @@ node_modules
 *.log
 /photos/
 uploadImages.js
+uploadDiscreteImages.js
 deleteImages.js
 uploadWebps.js
 automation/igSession.json
