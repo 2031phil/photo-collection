@@ -355,8 +355,18 @@ label, #monogramContainer, #downloadButton {
         top: 4rem;
     }
 
+    body.compact-view .top-row-container {
+        top: 9rem !important;
+    }
+
     .detail-view-container {
         top: 3rem;
+        transform: translate3d(0,0,0);
+        -webkit-transform: translate3d(0,0,0);
+    }
+
+    body.compact-view .detail-view-container {
+        top: 0;
     }
 }
 

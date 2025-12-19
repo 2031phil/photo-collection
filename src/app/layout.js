@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital@1&display=swap" rel="stylesheet" />
         <link rel="manifest" href="/manifest.json" />
         <meta
