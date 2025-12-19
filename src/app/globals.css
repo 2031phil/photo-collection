@@ -346,7 +346,7 @@ label, #monogramContainer, #downloadButton {
     }
 }
 
-/* @media (display-mode: standalone) {
+@media (display-mode: standalone) {
     nav {
         margin-top: 3rem;
     }
@@ -358,7 +358,7 @@ label, #monogramContainer, #downloadButton {
     .detail-view-container {
         top: 3rem;
     }
-} */
+}
 
 @media (min-width: 1600px) {
     #filterWrapper {
