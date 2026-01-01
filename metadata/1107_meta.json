@@ -1,0 +1,11 @@
+{
+  "filename": "1107_large.jpg",
+  "orientation": "landscape",
+  "country": "azerbaijan",
+  "environment": "maritime",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": false,
+    "ai_cleanup": false
+  }
+}
