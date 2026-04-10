@@ -255,7 +255,7 @@ label {
     justify-content: space-between;
     background: rgba(255, 255, 255, .5);
     border-radius: 2rem;
-    width: 25%;
+    width: 30%;
     z-index: 1;
 }
 
@@ -275,7 +275,7 @@ label {
 .detail-image {
     border-radius: 2rem;
     display: block;
-    height: 35rem;
+    height: 33rem;
 }
 
 .filter-expand-toggle,

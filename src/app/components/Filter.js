@@ -61,9 +61,10 @@ export default function Filter({ filters, onFilterChange, selectedPhotoId }) {
             const children = Array.from(container.children).filter(
                 el => el.classList && el.classList.contains('filter-section')
             );
-
-            const rowTops = new Set(children.map(child => child.offsetTop));
-            setIsOverflowing(rowTops.size > 1);
+            const tops = children.map(child => child.offsetTop);
+            const min = Math.min(...tops);
+            const isWrapping = tops.some(top => top - min > 10);
+            setIsOverflowing(isWrapping);
         }
     }
 
