@@ -1,0 +1,10 @@
+.grid {
+    display: grid;
+    width: 100%;
+    grid-gap: 1.25rem;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 2rem;
+    margin: 0 1rem;
+    z-index: 1;
+    transition: opacity .2s;
+}

@@ -19,6 +19,8 @@ export default function Navbar() {
             setCurrentPage('Gallery');
         } else if (pathname === '/usage-policy') {
             setCurrentPage('Usage Policy');
+        } else if (pathname === '/collections') {
+            setCurrentPage('Collections');
         } else {
             setCurrentPage('');
         }
@@ -56,6 +58,13 @@ export default function Navbar() {
                         text="Gallery"
                         clicked={currentPage === 'Gallery'}
                         onClick={() => setCurrentPage('Gallery')}
+                    />
+                </Link>
+                <Link href={'/collections'} style={{ textDecoration: 'none', color: 'black' }}>
+                    <Pressable
+                        text="Collections"
+                        clicked={currentPage === 'Collections'}
+                        onClick={() => setCurrentPage('Collections')}
                     />
                 </Link>
                 <Link href={'/usage-policy'} style={{ textDecoration: 'none', color: 'black' }}>
