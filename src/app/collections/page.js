@@ -2,7 +2,6 @@
 import '@/app/page.css';
 import '@/app/globals.css';
 import './page.css';
-import { useEffect, useState, useRef } from 'react';
 import { useResponsiveIconScale } from '@/utils/useResponsiveIconScale';
 import { motion } from 'framer-motion';
 import CollectionCard from '../components/CollectionCard';
