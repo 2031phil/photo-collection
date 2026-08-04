@@ -21,7 +21,7 @@ export default function Collections() {
                 <CollectionCard
                     title="Svalbard"
                     date="November 2025"
-                    numberOfImages="41"
+                    numberOfImages="40"
                     thumbnailId="1036"
                     link="svalbard"
                 />
