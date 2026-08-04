@@ -117,8 +117,6 @@ export default function CollectionCard({ title, date, numberOfImages, thumbnailI
                     <GallerySkeleton animate={true} />
                 )}
             </div>
-
-            {/* title + labels unchanged */}
             <h3 style={{ fontSize: '2rem', fontWeight: '600', marginLeft: '.25rem' }}>
                 {title}
             </h3>

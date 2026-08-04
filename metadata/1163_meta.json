@@ -1,0 +1,11 @@
+{
+  "filename": "1163_large.jpg",
+  "orientation": "portrait",
+  "country": "scotland",
+  "environment": "interior",
+  "time_of_day": "day",
+  "ai_info": {
+    "ai_denoise": true,
+    "ai_cleanup": false
+  }
+}
