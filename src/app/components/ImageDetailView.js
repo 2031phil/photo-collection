@@ -29,6 +29,7 @@ export default function ImageDetailView({ id, originUrl }) {
   const [imgSrc, setImgSrc] = useState(`/api/photos/${id}/small`);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [userAgree, setUserAgree] = useState(false);
+  const [hasTriedDownload, setHasTriedDownload] = useState(false);
   const [tags, setTags] = useState([]);
   const [imageWidth, setImageWidth] = useState(null);
   const [license, setLicense] = useState(0);
@@ -350,14 +351,10 @@ export default function ImageDetailView({ id, originUrl }) {
               </div>
               <AnimatePresence mode='wait'>
                 {license === 0 ? (
-                  <motion.div
+                  <div
                     style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
-                    initial={hasContainerAnimated ? { opacity: 0 } : null}
-                    animate={hasContainerAnimated ? { opacity: 1 } : null}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
                   >
-                    <label htmlFor='condition' style={{ display: 'flex', gap: '.8rem', alignItems: 'start', fontSize: '.875rem', fontWeight: '400' }}>
+                    <label htmlFor='condition' style={{ display: 'flex', gap: '.8rem', alignItems: 'start', fontSize: '.875rem', fontWeight: '400', color: hasTriedDownload && !userAgree ? 'red' : 'black' }}>
                       <input
                         style={{ marginTop: '.35rem', marginLeft: '.2rem', transform: 'scale(1.4)', cursor: 'pointer' }}
                         type='checkbox'
@@ -369,7 +366,13 @@ export default function ImageDetailView({ id, originUrl }) {
                       I agree to download this photo for personal use only.
                     </label>
                     <motion.button
-                      onClick={userAgree ? handleDownload : undefined}
+                      onClick={() => {
+                        if (userAgree) {
+                          handleDownload();
+                        } else {
+                          setHasTriedDownload(true);
+                        }
+                      }}
                       style={{
                         display: 'flex',
                         padding: '.4rem',
@@ -379,8 +382,8 @@ export default function ImageDetailView({ id, originUrl }) {
                         borderRadius: '2rem',
                         boxShadow: '0px 0px 16px 0px rgba(255, 0, 0, 0.25)',
                         background: 'white',
-                        cursor: userAgree ? 'pointer' : 'auto',
-                        opacity: userAgree ? '1' : '.5'
+                        cursor: 'pointer',
+                        opacity: '1'
                       }}
                       className='gradient-border-32'
                       id='downloadButton'
@@ -395,17 +398,13 @@ export default function ImageDetailView({ id, originUrl }) {
                         <path d="M3.97266 25.582C2.67578 25.582 1.6875 25.2461 1.00781 24.5742C0.335938 23.9023 0 22.9258 0 21.6445V10.2305C0 8.94141 0.335938 7.96484 1.00781 7.30078C1.6875 6.62891 2.67578 6.29297 3.97266 6.29297H7.3125V8.89453H4.18359C3.66797 8.89453 3.27344 9.02734 3 9.29297C2.73438 9.55078 2.60156 9.94922 2.60156 10.4883V21.375C2.60156 21.9141 2.73438 22.3125 3 22.5703C3.27344 22.8359 3.66797 22.9688 4.18359 22.9688H17.2734C17.7812 22.9688 18.1719 22.8359 18.4453 22.5703C18.7188 22.3125 18.8555 21.9141 18.8555 21.375V10.4883C18.8555 9.94922 18.7188 9.55078 18.4453 9.29297C18.1719 9.02734 17.7812 8.89453 17.2734 8.89453H14.1445V6.29297H17.4961C18.793 6.29297 19.7773 6.62891 20.4492 7.30078C21.1289 7.96484 21.4688 8.94141 21.4688 10.2305V21.6445C21.4688 22.9258 21.1289 23.9023 20.4492 24.5742C19.7773 25.2461 18.793 25.582 17.4961 25.582H3.97266ZM10.7227 0C11.0664 0 11.3516 0.117188 11.5781 0.351562C11.8125 0.585938 11.9297 0.863281 11.9297 1.18359V12.8203L11.8359 14.5547L12.4219 13.7695L13.9805 12.1055C14.1914 11.8711 14.457 11.7539 14.7773 11.7539C15.0586 11.7539 15.3047 11.8477 15.5156 12.0352C15.7266 12.2227 15.832 12.4648 15.832 12.7617C15.832 13.043 15.7227 13.293 15.5039 13.5117L11.6602 17.2148C11.5039 17.3711 11.3477 17.4805 11.1914 17.543C11.043 17.5977 10.8867 17.625 10.7227 17.625C10.5664 17.625 10.4141 17.5977 10.2656 17.543C10.1172 17.4805 9.96094 17.3711 9.79688 17.2148L5.95312 13.5117C5.73438 13.293 5.625 13.043 5.625 12.7617C5.625 12.4648 5.72656 12.2227 5.92969 12.0352C6.14062 11.8477 6.38672 11.7539 6.66797 11.7539C6.98828 11.7539 7.25781 11.8711 7.47656 12.1055L9.04688 13.7695L9.63281 14.5547L9.52734 12.8203V1.18359C9.52734 0.863281 9.64453 0.585938 9.87891 0.351562C10.1133 0.117188 10.3945 0 10.7227 0Z" fill="black" />
                       </svg>
                     </motion.button>
-                  </motion.div>
+                  </div>
                 ) : (
-                  <motion.a
+                  <a
                     href="mailto:philip.horlemann@web.de"
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ textDecoration: 'none' }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
                   >
                     <motion.button
                       style={{
@@ -432,7 +431,7 @@ export default function ImageDetailView({ id, originUrl }) {
                         <path d="M18.9883 13.9388C18.9883 14.3702 18.8433 14.731 18.5533 15.0212C18.2633 15.3114 17.9223 15.4565 17.5304 15.4565C17.1307 15.4565 16.7936 15.3114 16.5193 15.0212C16.2528 14.7231 16.1196 14.3702 16.1196 13.9624V9.52707L16.2959 5.13883L14.4148 7.25648L3.55131 18.1153C3.22995 18.4369 2.87332 18.5977 2.48142 18.5977C2.21493 18.5977 1.96803 18.5271 1.74073 18.3859C1.52127 18.2447 1.34099 18.0604 1.19991 17.833C1.05882 17.5977 0.988281 17.3545 0.988281 17.1035C0.988281 16.7114 1.14896 16.3545 1.47032 16.033L12.3221 5.1506L14.4266 3.29177L9.86483 3.45648H5.60879C5.20905 3.45648 4.86026 3.31923 4.56242 3.04472C4.27241 2.77021 4.12741 2.43687 4.12741 2.04472C4.12741 1.65256 4.26849 1.3153 4.55066 1.03295C4.84067 0.742754 5.20121 0.597656 5.6323 0.597656H17.4246C17.9027 0.597656 18.2789 0.742754 18.5533 1.03295C18.8354 1.3153 18.9765 1.68393 18.9765 2.13883L18.9883 13.9388Z" fill="white" />
                       </svg>
                     </motion.button>
-                  </motion.a>
+                  </a>
                 )}
               </AnimatePresence>
             </motion.div>

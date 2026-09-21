@@ -350,15 +350,23 @@ label,
 
 @media (display-mode: standalone) {
     nav {
-        margin-top: 3rem;
+        margin-top: 5rem;
     }
 
     #filterWrapper {
-        top: 4rem;
+        top: 6rem;
+    }
+
+    .top-row-container {
+        top: 8rem !important;
+    }
+
+    .image-and-license-container {
+        margin-top: 2rem;
     }
 
     body.compact-view .top-row-container {
-        top: 9rem !important;
+        top: 11rem !important;
     }
 
     .detail-view-container {
