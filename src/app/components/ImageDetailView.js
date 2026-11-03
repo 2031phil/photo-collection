@@ -65,10 +65,6 @@ export default function ImageDetailView({ id, originUrl }) {
   }, []);
 
   useEffect(() => {
-    console.log(originUrl);
-  }, []);
-
-  useEffect(() => {
     // Reset loading state when activePhotoId changes
     setIsImageLoaded(false);
     const smallImageSrc = `/api/photos/${activePhotoId}/small`;
