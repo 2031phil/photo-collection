@@ -20,10 +20,17 @@ export default function Collections() {
             <div className='grid'>
                 <CollectionCard
                     title="Svalbard"
-                    date="November 2025"
+                    date="March 2024"
                     numberOfImages="40"
                     thumbnailId="1036"
                     link="svalbard"
+                />
+                <CollectionCard
+                    title="Scotland"
+                    date="September 2024"
+                    numberOfImages="68"
+                    thumbnailId="0099"
+                    link="scotland"
                 />
                 <CollectionCard
                     title="Uzbekistan"
